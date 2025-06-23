@@ -1289,144 +1289,144 @@ async def query_ttv_task(
         )
 
 
-@mcp.tool(description="""
-Function: Edit an image based on a prompt and mask
+# @mcp.tool(description="""
+# Function: Edit an image based on a prompt and mask
 
-Args:
-    image_path (str): The path to the image file to edit (local file path).
-    mask_path (str): The path to the mask file (local file path). Must be PNG format.
-    prompt (str): The prompt describing how to edit the image.
-    model_name (str, optional): The model name to use. Default is "deploy_gpt_image_1".
+# Args:
+#     image_path (str): The path to the image file to edit (local file path).
+#     mask_path (str): The path to the mask file (local file path). Must be PNG format.
+#     prompt (str): The prompt describing how to edit the image.
+#     model_name (str, optional): The model name to use. Default is "deploy_gpt_image_1".
 
-Returns:
-    TextContent: Contains the result of the image editing operation, including the edited image URL or error details.
-""")
-async def edit_image(
-    image_path: str,
-    mask_path: str,
-    prompt: str,
-    model_name: str = "deploy_gpt_image_1"
-) -> TextContent:
-    try:
-        if not image_path:
-            raise Exception("Image path is required")
-        if not mask_path:
-            raise Exception("Mask path is required")
-        if not prompt:
-            raise Exception("Prompt is required")
+# Returns:
+#     TextContent: Contains the result of the image editing operation, including the edited image URL or error details.
+# """)
+# async def edit_image(
+#     image_path: str,
+#     mask_path: str,
+#     prompt: str,
+#     model_name: str = "deploy_gpt_image_1"
+# ) -> TextContent:
+#     try:
+#         if not image_path:
+#             raise Exception("Image path is required")
+#         if not mask_path:
+#             raise Exception("Mask path is required")
+#         if not prompt:
+#             raise Exception("Prompt is required")
 
-        # Check if files exist
-        if not os.path.exists(image_path):
-            raise Exception(f"Image file not found: {image_path}")
-        if not os.path.exists(mask_path):
-            raise Exception(f"Mask file not found: {mask_path}")
+#         # Check if files exist
+#         if not os.path.exists(image_path):
+#             raise Exception(f"Image file not found: {image_path}")
+#         if not os.path.exists(mask_path):
+#             raise Exception(f"Mask file not found: {mask_path}")
 
-        # Prepare form data
-        data = {
-            "model_name": model_name,
-            "prompt": prompt
-        }
+#         # Prepare form data
+#         data = {
+#             "model_name": model_name,
+#             "prompt": prompt
+#         }
 
-        # Prepare files for upload
-        files = {}
+#         # Prepare files for upload
+#         files = {}
         
-        # Add image file
-        with open(image_path, 'rb') as img_file:
-            image_content = img_file.read()
-            files["image"] = ("image.png", image_content, "image/png")
+#         # Add image file
+#         with open(image_path, 'rb') as img_file:
+#             image_content = img_file.read()
+#             files["image"] = ("image.png", image_content, "image/png")
         
-        # Add mask file
-        with open(mask_path, 'rb') as mask_file:
-            mask_content = mask_file.read()
-            files["mask"] = ("mask.png", mask_content, "image/png")
+#         # Add mask file
+#         with open(mask_path, 'rb') as mask_file:
+#             mask_content = mask_file.read()
+#             files["mask"] = ("mask.png", mask_content, "image/png")
 
-        # 使用统一的请求函数调用图片编辑API
-        response_data = await make_unified_request(
-            method="POST",
-            path="/pulsar/mcp/openai/edit",
-            data=data,
-            files=files
-        )
+#         # 使用统一的请求函数调用图片编辑API
+#         response_data = await make_unified_request(
+#             method="POST",
+#             path="/pulsar/mcp/openai/edit",
+#             data=data,
+#             files=files
+#         )
         
-        return TextContent(
-            type="text",
-            text=f"Success. Image editing completed: {response_data}"
-        )
+#         return TextContent(
+#             type="text",
+#             text=f"Success. Image editing completed: {response_data}"
+#         )
         
-    except Exception as e:
-        return TextContent(
-            type="text",
-            text=f"Failed to edit image: {str(e)}"
-        )
+#     except Exception as e:
+#         return TextContent(
+#             type="text",
+#             text=f"Failed to edit image: {str(e)}"
+#         )
 
 
-@mcp.tool(description="""
-Function: Edit an image based on a prompt and mask using URLs
+# @mcp.tool(description="""
+# Function: Edit an image based on a prompt and mask using URLs
 
-Args:
-    image_url (str): The URL of the image to edit.
-    mask_url (str): The URL of the mask image. Must be PNG format.
-    prompt (str): The prompt describing how to edit the image.
-    model_name (str, optional): The model name to use. Default is "deploy_gpt_image_1".
+# Args:
+#     image_url (str): The URL of the image to edit.
+#     mask_url (str): The URL of the mask image. Must be PNG format.
+#     prompt (str): The prompt describing how to edit the image.
+#     model_name (str, optional): The model name to use. Default is "deploy_gpt_image_1".
 
-Returns:
-    TextContent: Contains the result of the image editing operation, including the edited image URL or error details.
-""")
-async def edit_image_from_urls(
-    image_url: str,
-    mask_url: str,
-    prompt: str,
-    model_name: str = "deploy_gpt_image_1"
-) -> TextContent:
-    try:
-        if not image_url:
-            raise Exception("Image URL is required")
-        if not mask_url:
-            raise Exception("Mask URL is required")
-        if not prompt:
-            raise Exception("Prompt is required")
+# Returns:
+#     TextContent: Contains the result of the image editing operation, including the edited image URL or error details.
+# """)
+# async def edit_image_from_urls(
+#     image_url: str,
+#     mask_url: str,
+#     prompt: str,
+#     model_name: str = "deploy_gpt_image_1"
+# ) -> TextContent:
+#     try:
+#         if not image_url:
+#             raise Exception("Image URL is required")
+#         if not mask_url:
+#             raise Exception("Mask URL is required")
+#         if not prompt:
+#             raise Exception("Prompt is required")
 
-        import requests
+#         import requests
         
-        # Download images from URLs
-        image_response = requests.get(image_url)
-        if image_response.status_code != 200:
-            raise Exception(f"Failed to download image: {image_response.status_code}")
+#         # Download images from URLs
+#         image_response = requests.get(image_url)
+#         if image_response.status_code != 200:
+#             raise Exception(f"Failed to download image: {image_response.status_code}")
             
-        mask_response = requests.get(mask_url)
-        if mask_response.status_code != 200:
-            raise Exception(f"Failed to download mask: {mask_response.status_code}")
+#         mask_response = requests.get(mask_url)
+#         if mask_response.status_code != 200:
+#             raise Exception(f"Failed to download mask: {mask_response.status_code}")
 
-        # Prepare form data
-        data = {
-            "model_name": model_name,
-            "prompt": prompt
-        }
+#         # Prepare form data
+#         data = {
+#             "model_name": model_name,
+#             "prompt": prompt
+#         }
 
-        # Prepare files for upload
-        files = {
-            "image": ("image.png", image_response.content, "image/png"),
-            "mask": ("mask.png", mask_response.content, "image/png")
-        }
+#         # Prepare files for upload
+#         files = {
+#             "image": ("image.png", image_response.content, "image/png"),
+#             "mask": ("mask.png", mask_response.content, "image/png")
+#         }
 
-        # 使用统一的请求函数调用图片编辑API
-        response_data = await make_unified_request(
-            method="POST",
-            path="/pulsar/mcp/openai/edit",
-            data=data,
-            files=files
-        )
+#         # 使用统一的请求函数调用图片编辑API
+#         response_data = await make_unified_request(
+#             method="POST",
+#             path="/pulsar/mcp/openai/edit",
+#             data=data,
+#             files=files
+#         )
         
-        return TextContent(
-            type="text",
-            text=f"Success. Image editing completed: {response_data}"
-        )
+#         return TextContent(
+#             type="text",
+#             text=f"Success. Image editing completed: {response_data}"
+#         )
         
-    except Exception as e:
-        return TextContent(
-            type="text",
-            text=f"Failed to edit image: {str(e)}"
-        )
+#     except Exception as e:
+#         return TextContent(
+#             type="text",
+#             text=f"Failed to edit image: {str(e)}"
+#         )
 
 
 
