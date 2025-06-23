@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "SynClub": {
+      "command": "uvx",
+      "args": [
+          "synclub-mcp"
+      ],
+      "env": {
+          "SYNCLUB_MCP_API": "your api key"
+      }
+    }
+  }
+}
