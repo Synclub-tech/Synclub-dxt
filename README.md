@@ -74,6 +74,8 @@ Open config file:
 }
 ```
 
+If you have any problem with the command uvx, try to use the command `which uvx` to find the absolute path of uvx and replace the command in the config file.
+
 **step 3：save and restart your claude application**
 - **important：make sure to restart claude that your config file will update and check the connection in claude developer**
 
@@ -85,8 +87,10 @@ Open config file:
 | `minimax_list_voices` | List all available voices | Free |
 | `minimax_voice_clone` | Clone voices from audio files |
 | `minimax_text_to_image` | Generate images from text prompts |
-| `generate_text_to_video` | Generate videos from text descriptions using Kling models|
-| `generate_image_to_video` | Generate videos from images with text prompts using Kling models|
+| `generate_text_to_video` | Start generate videos from text descriptions using Kling models|
+| `query_ttv_task` | Get the generate result from generate_text_to_video tool|
+| `generate_image_to_video` | Start generate videos from images with text prompts using Kling models|
+| `query_gttv_task` | Get the generate result from generate_image_to_video tool|
 | `image_recognition` | Analyze and recognize image content |
 | `remove_bg` | Automatically remove image backgrounds | Free |
 | `hd_restore` | Enhance image quality and resolution | Free |
