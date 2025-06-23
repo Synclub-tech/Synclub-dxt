@@ -239,41 +239,41 @@ def minimax_text_to_audio(
         )
 
 
-@mcp.tool(
-    description="""List all voices available.
+# @mcp.tool(
+#     description="""List all voices available.
 
-    Args:
-        voice_type (str, optional): The type of voices to list. Values range ["all", "system", "voice_cloning"], with "all" being the default.
-    Returns:
-        Text content with the list of voices.
-    """
-)
-def minimax_list_voices(
-    voice_type: str = "all"
-):
-    try:
-        response_data = api_client.post("/pulsar/mcp/miniMax/voice_list", json={'voice_type': voice_type})
+#     Args:
+#         voice_type (str, optional): The type of voices to list. Values range ["all", "system", "voice_cloning"], with "all" being the default.
+#     Returns:
+#         Text content with the list of voices.
+#     """
+# )
+# def minimax_list_voices(
+#     voice_type: str = "all"
+# ):
+#     try:
+#         response_data = api_client.post("/pulsar/mcp/miniMax/voice_list", json={'voice_type': voice_type})
         
-        system_voices = response_data.get('system_voice', []) or []
-        voice_cloning_voices = response_data.get('voice_cloning', []) or []
-        system_voice_list = []
-        voice_cloning_voice_list = []
+#         system_voices = response_data.get('system_voice', []) or []
+#         voice_cloning_voices = response_data.get('voice_cloning', []) or []
+#         system_voice_list = []
+#         voice_cloning_voice_list = []
         
-        for voice in system_voices:
-            system_voice_list.append(f"Name: {voice.get('voice_name')}, ID: {voice.get('voice_id')}")
-        for voice in voice_cloning_voices:
-            voice_cloning_voice_list.append(f"Name: {voice.get('voice_name')}, ID: {voice.get('voice_id')}")
+#         for voice in system_voices:
+#             system_voice_list.append(f"Name: {voice.get('voice_name')}, ID: {voice.get('voice_id')}")
+#         for voice in voice_cloning_voices:
+#             voice_cloning_voice_list.append(f"Name: {voice.get('voice_name')}, ID: {voice.get('voice_id')}")
 
-        return TextContent(
-            type="text",
-            text=f"Success. System Voices: {system_voice_list}, Voice Cloning Voices: {voice_cloning_voice_list}"
-        )
+#         return TextContent(
+#             type="text",
+#             text=f"Success. System Voices: {system_voice_list}, Voice Cloning Voices: {voice_cloning_voice_list}"
+#         )
         
-    except SynclubAPIError as e:
-        return TextContent(
-            type="text",
-            text=f"Failed to list voices: {str(e)}"
-        )
+#     except SynclubAPIError as e:
+#         return TextContent(
+#             type="text",
+#             text=f"Failed to list voices: {str(e)}"
+#         )
 
 
 @mcp.tool(
@@ -537,137 +537,137 @@ def minimax_text_to_image(
 
 
 
-@mcp.tool(
-    description="""Generate a video from a prompt.
+# @mcp.tool(
+#     description="""Generate a video from a prompt.
 
-    COST WARNING: This tool makes an API call to Minimax which may incur costs. Only use when explicitly requested by the user.
+#     COST WARNING: This tool makes an API call to Minimax which may incur costs. Only use when explicitly requested by the user.
 
-     Args:
-        model (str, optional): The model to use. Values range ["T2V-01", "T2V-01-Director", "I2V-01", "I2V-01-Director", "I2V-01-live"]. "Director" supports inserting instructions for camera movement control. "I2V" for image to video. "T2V" for text to video.
-        prompt (str): The prompt to generate the video from. When use Director model, the prompt supports 15 Camera Movement Instructions (Enumerated Values)
-            -Truck: [Truck left], [Truck right]
-            -Pan: [Pan left], [Pan right]
-            -Push: [Push in], [Pull out]
-            -Pedestal: [Pedestal up], [Pedestal down]
-            -Tilt: [Tilt up], [Tilt down]
-            -Zoom: [Zoom in], [Zoom out]
-            -Shake: [Shake]
-            -Follow: [Tracking shot]
-            -Static: [Static shot]
-        first_frame_image (str): The first frame image. The model must be "I2V" Series.
-        output_directory (str): The directory to save the video to.
-        async_mode (bool, optional): Whether to use async mode. Defaults to False. If True, the video generation task will be submitted asynchronously and the response will return a task_id. Should use `query_video_generation` tool to check the status of the task and get the result.
-    Returns:
-        Text content with the path to the output video file.
-    """
-)
-def minimax_generate_video(
-    model: str = DEFAULT_T2V_MODEL,
-    prompt: str = "",
-    first_frame_image  = None,
-    output_directory: str = None,
-    async_mode: bool = False
-):
-    try:
-        if not prompt:
-            raise SynclubRequestError("Prompt is required")
+#      Args:
+#         model (str, optional): The model to use. Values range ["T2V-01", "T2V-01-Director", "I2V-01", "I2V-01-Director", "I2V-01-live"]. "Director" supports inserting instructions for camera movement control. "I2V" for image to video. "T2V" for text to video.
+#         prompt (str): The prompt to generate the video from. When use Director model, the prompt supports 15 Camera Movement Instructions (Enumerated Values)
+#             -Truck: [Truck left], [Truck right]
+#             -Pan: [Pan left], [Pan right]
+#             -Push: [Push in], [Pull out]
+#             -Pedestal: [Pedestal up], [Pedestal down]
+#             -Tilt: [Tilt up], [Tilt down]
+#             -Zoom: [Zoom in], [Zoom out]
+#             -Shake: [Shake]
+#             -Follow: [Tracking shot]
+#             -Static: [Static shot]
+#         first_frame_image (str): The first frame image. The model must be "I2V" Series.
+#         output_directory (str): The directory to save the video to.
+#         async_mode (bool, optional): Whether to use async mode. Defaults to False. If True, the video generation task will be submitted asynchronously and the response will return a task_id. Should use `query_video_generation` tool to check the status of the task and get the result.
+#     Returns:
+#         Text content with the path to the output video file.
+#     """
+# )
+# def minimax_generate_video(
+#     model: str = DEFAULT_T2V_MODEL,
+#     prompt: str = "",
+#     first_frame_image  = None,
+#     output_directory: str = None,
+#     async_mode: bool = False
+# ):
+#     try:
+#         if not prompt:
+#             raise SynclubRequestError("Prompt is required")
 
-        # check first_frame_image
-        if first_frame_image:
-            if not isinstance(first_frame_image, str):
-                raise SynclubRequestError(f"First frame image must be a string, got {type(first_frame_image)}")
-            if not first_frame_image.startswith(("http://", "https://", "data:")):
-                # if local image, convert to dataurl
-                if not os.path.exists(first_frame_image):
-                    raise SynclubRequestError(f"First frame image does not exist: {first_frame_image}")
-                with open(first_frame_image, "rb") as f:
-                    image_data = f.read()
-                    first_frame_image = f"data:image/jpeg;base64,{base64.b64encode(image_data).decode('utf-8')}"
+#         # check first_frame_image
+#         if first_frame_image:
+#             if not isinstance(first_frame_image, str):
+#                 raise SynclubRequestError(f"First frame image must be a string, got {type(first_frame_image)}")
+#             if not first_frame_image.startswith(("http://", "https://", "data:")):
+#                 # if local image, convert to dataurl
+#                 if not os.path.exists(first_frame_image):
+#                     raise SynclubRequestError(f"First frame image does not exist: {first_frame_image}")
+#                 with open(first_frame_image, "rb") as f:
+#                     image_data = f.read()
+#                     first_frame_image = f"data:image/jpeg;base64,{base64.b64encode(image_data).decode('utf-8')}"
 
-        # step1: submit video generation task
-        payload = {
-            "model": model,
-            "prompt": prompt
-        }
-        if first_frame_image:
-            payload["first_frame_image"] = first_frame_image
+#         # step1: submit video generation task
+#         payload = {
+#             "model": model,
+#             "prompt": prompt
+#         }
+#         if first_frame_image:
+#             payload["first_frame_image"] = first_frame_image
         
-        response_data = api_client.post("/pulsar/mcp/minimax/ttv/create", json=payload)
-        task_id = response_data.get("task_id")
-        if not task_id:
-            raise SynclubRequestError("Failed to get task_id from response")
+#         response_data = api_client.post("/pulsar/mcp/minimax/ttv/create", json=payload)
+#         task_id = response_data.get("task_id")
+#         if not task_id:
+#             raise SynclubRequestError("Failed to get task_id from response")
 
-        if async_mode:
-            return TextContent(
-                type="text",
-                text=f"Success. Video generation task submitted: Task ID: {task_id}. Please use `query_video_generation` tool to check the status of the task and get the result."
-            )
+#         if async_mode:
+#             return TextContent(
+#                 type="text",
+#                 text=f"Success. Video generation task submitted: Task ID: {task_id}. Please use `query_video_generation` tool to check the status of the task and get the result."
+#             )
 
-        # step2: wait for video generation task to complete
-        file_id = None
-        max_retries = 30  # 10 minutes total (30 * 20 seconds)
-        retry_interval = 20  # seconds
+#         # step2: wait for video generation task to complete
+#         file_id = None
+#         max_retries = 30  # 10 minutes total (30 * 20 seconds)
+#         retry_interval = 20  # seconds
         
-        for attempt in range(max_retries):
-            status_response = api_client.get(f"/pulsar/mcp/minimax/ttv/task?task_id={task_id}")
-            status = status_response.get("status")
+#         for attempt in range(max_retries):
+#             status_response = api_client.get(f"/pulsar/mcp/minimax/ttv/task?task_id={task_id}")
+#             status = status_response.get("status")
             
-            if status == "Fail":
-                raise SynclubRequestError(f"Video generation failed for task_id: {task_id}")
-            elif status == "Success":
-                file_id = status_response.get("file_id")
-                if file_id:
-                    break
-                raise SynclubRequestError(f"Missing file_id in success response for task_id: {task_id}")
+#             if status == "Fail":
+#                 raise SynclubRequestError(f"Video generation failed for task_id: {task_id}")
+#             elif status == "Success":
+#                 file_id = status_response.get("file_id")
+#                 if file_id:
+#                     break
+#                 raise SynclubRequestError(f"Missing file_id in success response for task_id: {task_id}")
             
-            # Still processing, wait and retry
-            time.sleep(retry_interval)
+#             # Still processing, wait and retry
+#             time.sleep(retry_interval)
 
-        if not file_id:
-            raise SynclubRequestError(f"Failed to get file_id for task_id: {task_id}")
+#         if not file_id:
+#             raise SynclubRequestError(f"Failed to get file_id for task_id: {task_id}")
 
-        # step3: fetch video result
-        file_response = api_client.get(f"/pulsar/mcp/minimax/ttv/file?file_id={file_id}")
-        download_url = file_response.get("file", {}).get("download_url")
+#         # step3: fetch video result
+#         file_response = api_client.get(f"/pulsar/mcp/minimax/ttv/file?file_id={file_id}")
+#         download_url = file_response.get("file", {}).get("download_url")
         
-        if not download_url:
-            raise SynclubRequestError(f"Failed to get download URL for file_id: {file_id}")
-        if resource_mode == RESOURCE_MODE_URL:
-            return TextContent(
-                type="text",
-                text=f"Success. Video URL: {download_url}"
-            )
-        # step4: download and save video
-        output_path = build_output_path(output_directory, base_path)
-        output_file_name = build_output_file("video", task_id, output_path, "mp4", True)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
+#         if not download_url:
+#             raise SynclubRequestError(f"Failed to get download URL for file_id: {file_id}")
+#         if resource_mode == RESOURCE_MODE_URL:
+#             return TextContent(
+#                 type="text",
+#                 text=f"Success. Video URL: {download_url}"
+#             )
+#         # step4: download and save video
+#         output_path = build_output_path(output_directory, base_path)
+#         output_file_name = build_output_file("video", task_id, output_path, "mp4", True)
+#         output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        video_response = requests.get(download_url)
-        video_response.raise_for_status()
+#         video_response = requests.get(download_url)
+#         video_response.raise_for_status()
         
-        with open(output_path / output_file_name, "wb") as f:
-            f.write(video_response.content)
+#         with open(output_path / output_file_name, "wb") as f:
+#             f.write(video_response.content)
 
-        return TextContent(
-            type="text",
-            text=f"Success. Video saved as: {output_path / output_file_name}"
-        )
+#         return TextContent(
+#             type="text",
+#             text=f"Success. Video saved as: {output_path / output_file_name}"
+#         )
 
-    except SynclubAPIError as e:
-        return TextContent(
-            type="text",
-            text=f"Failed to generate video: {str(e)}"
-        )
-    except (IOError, requests.RequestException) as e:
-        return TextContent(
-            type="text",
-            text=f"Failed to handle video file: {str(e)}"
-        )
-    except Exception as e:
-        return TextContent(
-            type="text",
-            text=f"Unexpected error while generating video: {str(e)}"
-        )
+#     except SynclubAPIError as e:
+#         return TextContent(
+#             type="text",
+#             text=f"Failed to generate video: {str(e)}"
+#         )
+#     except (IOError, requests.RequestException) as e:
+#         return TextContent(
+#             type="text",
+#             text=f"Failed to handle video file: {str(e)}"
+#         )
+#     except Exception as e:
+#         return TextContent(
+#             type="text",
+#             text=f"Unexpected error while generating video: {str(e)}"
+#         )
 
 
 
