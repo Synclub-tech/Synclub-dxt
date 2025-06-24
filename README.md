@@ -84,7 +84,7 @@ If you have any problem with the command uvx, try to use the command `which uvx`
 | Tool Name | Description |
 |-----------|-------------|
 | `minimax_text_to_audio` | Convert text to speech with customizable voice settings |
-| `minimax_list_voices` | List all available voices | Free |
+| `minimax_generate_video` | Minimax generate videos | Free |
 | `minimax_voice_clone` | Clone voices from audio files |
 | `minimax_text_to_image` | Generate images from text prompts |
 | `kling_generate_text_to_video` | Start generate videos from text descriptions using Kling models|
