@@ -45,7 +45,7 @@ resource_mode = os.getenv(ENV_RESOURCE_MODE) or RESOURCE_MODE_URL
 fastmcp_log_level = os.getenv(ENV_FASTMCP_LOG_LEVEL) or "WARNING"
 
 # 统一的占位 Base URL，可通过环境变量 UNIFIED_API_BASE_URL 覆盖
-UNIFIED_BASE_URL = os.getenv("UNIFIED_API_BASE_URL", "https://synclub.baidu-int.com")
+UNIFIED_BASE_URL = os.getenv("UNIFIED_API_BASE_URL", "https://pre-api.synclubmcp.com")
 
 # if not api_key:
 #     raise ValueError("MINIMAX_API_KEY environment variable is required")
@@ -850,7 +850,7 @@ async def openai_image_recognition(
 
 
 @mcp.tool()
-async def gub_japanese_tts(
+async def gbu_japanese_tts(
     text: str,
     format: str = "mp3",
     sample_rate: int = 16000,

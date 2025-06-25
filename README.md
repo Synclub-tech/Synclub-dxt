@@ -48,13 +48,13 @@ You can find your config file at:
 Or you can find your config file in claude setting:
 
 Click claude setting:
-![Configuration Example](image/a573ab2ed4900d8b2478b6d5b91f78e0.jpg)
+![Configuration Example](https://github.com/520chatgpt01/Synclub-mcp-server/blob/main/image/a573ab2ed4900d8b2478b6d5b91f78e0.jpg)
 
 Edit config file:
-![Configuration Example](image/7e790df2aefa5dee0aeb40735ac12124.jpg)
+![Configuration Example](https://github.com/520chatgpt01/Synclub-mcp-server/blob/main/image/7e790df2aefa5dee0aeb40735ac12124.jpg)
 
 Open config file:
-![Configuration Example](image/ccdfa55185c0f5f4d07a6b7fdf93c0d6.jpg)
+![Configuration Example](https://github.com/520chatgpt01/Synclub-mcp-server/blob/main/image/ccdfa55185c0f5f4d07a6b7fdf93c0d6.jpg)
 
 **Step 2: append this config to your own file**
 
