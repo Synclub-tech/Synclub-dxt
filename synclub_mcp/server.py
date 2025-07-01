@@ -847,6 +847,58 @@ async def openai_image_recognition(
         )
 
 
+@mcp.tool(description="""
+    Function: Edit an image based on a text prompt
+
+    Args:
+        image_url (str): The URL of the image to edit.
+        prompt (str): The prompt to edit the image.
+
+    Returns:
+        TextContent: Contains the result image URLs or file paths
+""")
+async def openai_edit_image(
+    image_url: str,
+    prompt: str,
+) -> TextContent:
+    try:
+        if not image_url or not prompt:
+            raise Exception("Image URL and prompt are required")
+        
+        #  # 将图像url转成文件格式再上传
+        response = requests.get(image_url)
+        if response.status_code != 200:
+            raise Exception(f"图片下载失败: {response.status_code}")
+
+        files = {
+            "image": ("image.png", response.content, "image/png"),
+        }
+            
+        data = {
+            "model_name": "deploy_gpt_image_1",
+            "prompt": prompt,
+        }
+        
+        response_data = await make_unified_request(
+            method="POST",
+            path="/pulsar/mcp/openai/edit",
+            data=data,
+            files=files,      
+        )
+        
+        return TextContent(
+            type="text",
+            text=f"Success. Image edited: {response_data}"
+        )   
+        
+    except Exception as e:
+        return TextContent(
+            type="text",
+            text=f"Failed to edit image: {str(e)}"
+        )
+
+
+
 
 
 @mcp.tool()
@@ -1416,6 +1468,162 @@ async def kling_query_ttv_task(
 #             type="text",
 #             text=f"Failed to edit image: {str(e)}"
 #         )
+
+
+@mcp.tool(description="""
+    Function: Generate a anime character based on a text prompt
+
+    Args:
+        prompt (str): The prompt describing the anime character to generate,English.
+        gender (str): The gender of the anime character to generate. 0-male, 1-female, 2-other
+        model_style (str): The style of the anime character to generate. values range: Games
+
+    Returns:
+        task_id (str): The task ID of the anime character generation task.
+""")
+async def gbu_ugc_tti(
+    prompt: str,
+    gender: int,
+    model_style: str,
+) -> TextContent:
+    try:
+        model_style_mapping = {
+            "Games": "onediff_v1_animagine-xl-3.1.safetensors", 
+            
+        }
+        model_name = model_style_mapping.get(model_style, "Games")
+
+        data = {
+            "prompt": prompt,
+            "gender": gender,
+            "model_name": model_name
+        }
+
+        response_data = await make_unified_request(
+            method="POST",
+            path="/pulsar/mcp/inner/comic/generate_role",
+            data=data,
+        )
+        
+        return TextContent(
+            type="text",
+            text=f"Success. Anime character generation task created: {response_data}"
+        )
+        
+    except Exception as e:
+        return TextContent(
+            type="text",
+            text=f"Failed to create anime character generation task: {str(e)}"
+        )
+
+@mcp.tool(description="""
+    Function: Query the status of a anime character generation task
+
+    Args:
+        task_id (str): The task ID of the anime character generation task.
+
+    Returns:
+        status (str): The status of the anime character generation task.
+""")
+async def gbu_ugc_tti_task(
+    task_id: str,
+) -> TextContent:
+    try:
+        if not task_id:
+            raise Exception("Task ID is required") 
+        
+        data = {
+            "task_id": task_id,
+        }
+
+        response_data = await make_unified_request(
+            method="POST",
+            path=f"/pulsar/mcp/inner/comic/query_task",
+            data=data,
+        )
+
+        return TextContent(
+            type="text",
+            text=f"Success. Anime character generation task status: {response_data}"
+        )
+        
+    except Exception as e:
+        return TextContent(
+            type="text",
+            text=f"Failed to query anime character generation task status: {str(e)}"
+        )
+
+
+
+@mcp.tool(description="""
+    Function: Generate a pose align image based on an anime character image
+
+    Args:
+        image_url (str): The URL of the character image.
+
+    Returns:
+        task_id (str): The task ID of the pose align image generation task.
+""")
+async def gbu_anime_pose_align(
+    image_url: str,
+) -> TextContent:
+    try:
+        if not image_url:
+            raise Exception("Image URL are required")
+        
+        data = {
+            "image_url": image_url,
+        }
+
+        response_data = await make_unified_request(
+            method="POST",
+            path="/pulsar/mcp/inner/comic/pose_straighten",
+            data=data,
+        )
+        
+        return TextContent(
+            type="text",
+            text=f"Success. Pose align task created: {response_data}"
+        )
+        
+    except Exception as e:
+        return TextContent(
+            type="text",
+            text=f"Failed to create pose align task: {str(e)}"
+        )
+
+@mcp.tool(description="""
+    Function: Query the status of a pose align image generation task
+""")
+async def gbu_anime_pose_align_task(
+    task_id: str,
+) -> TextContent:
+    try:
+        if not task_id:
+            raise Exception("Task ID is required")
+        
+        data = {
+            "task_id": task_id,
+        }
+
+        response_data = await make_unified_request(
+            method="POST",
+            path=f"/pulsar/mcp/inner/comic/query_task",         
+            data=data,
+        )
+        
+        return TextContent(
+            type="text",
+            text=f"Success. Pose align task status: {response_data}"
+        )   
+        
+    except Exception as e:
+        return TextContent(
+            type="text",
+            text=f"Failed to query pose align task status: {str(e)}"
+        )  
+
+
 
 
 
