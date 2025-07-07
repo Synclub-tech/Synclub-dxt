@@ -1624,7 +1624,99 @@ async def gbu_anime_pose_align_task(
         )  
 
 
+@mcp.tool(description="""
+    Function: Generate a comic image based on prompt, scene_type,char_image and char_gender
 
+    Args:
+        prompt (str): The prompt for the comic image.
+        scene_type (str): The scene type for the comic image. value range: ["nc", "single", "double"],nc-no character,single-single character,double-double character
+        char1_image (str): The URL of the character1 image pose align.
+        char2_image (str): The URL of the character2 image pose align. value = "" if scene_type in ["nc", "single"]
+        char1_gender (str): The gender of the character1. value range: ["0", "1"], 0-male,1-female
+        char2_gender (str): The gender of the character2. value range: ["0", "1"], 0-male,1-female, value = "" if scene_type in ["nc", "single"]
+        model_style (str): The style of the comic image. value range: ["Games"]
+
+    Returns:
+        task_id (str): The task ID of the comic image generation task.
+""")
+async def gbu_anime_comic_image(
+    prompt: str,
+    scene_type: str,
+    char1_image: str,
+    char2_image: str,
+    char1_gender: str,
+    char2_gender: str,
+    model_style: str,
+) -> TextContent:
+    try:
+        char2_image = "" if scene_type in ["nc", "single"] else char2_image
+        char2_gender = "" if scene_type in ["nc", "single"] else char2_gender
+        
+        data = {
+            "prompt": prompt,
+            "scene_type": scene_type,
+            "char1_image": char1_image,
+            "char2_image": char2_image,
+            "char1_gender": char1_gender,
+            "char2_gender": char2_gender,
+            "model_style": model_style,
+        }
+
+        response_data = await make_unified_request(
+            method="POST",
+            path="/pulsar/mcp/inner/comic/generate_comic",
+            data=data,
+        )
+        
+        return TextContent(
+            type="text",
+            text=f"Success. Comic image generation task created: {response_data}"
+        )
+        
+    except Exception as e:
+        return TextContent( 
+            type="text",
+            text=f"Failed to create comic image generation task: {str(e)}"
+        )
+
+
+@mcp.tool(description="""
+    Function: Query the status of comic image generation task
+
+    Args:
+        task_id (str): The task ID of the comic image generation task.
+
+    Returns:
+        task_status (str): The status of the comic image generation task.
+""")
+async def gbu_anime_comic_image_task(
+    task_id: str,
+) -> TextContent:
+    try:
+        if not task_id:
+            raise Exception("Task ID is required")
+        
+        data = {
+            "task_id": task_id,
+        }
+        
+        response_data = await make_unified_request(
+            method="POST",
+            path=f"/pulsar/mcp/inner/comic/query_task",         
+            data=data,
+        )
+        
+        return TextContent(
+            type="text",
+            text=f"Success. Comic image generation task status: {response_data}"
+        )
+        
+    except Exception as e:  
+        return TextContent(
+            type="text",
+            text=f"Failed to query comic image generation task status: {str(e)}"
+        )
+    
 
 
 
