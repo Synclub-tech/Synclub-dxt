@@ -26,7 +26,7 @@ from synclub_mcp.utils import (
     play
 )
 import httpx
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Union
 
 from synclub_mcp.const import *
 from synclub_mcp.exceptions import SynclubAPIError, SynclubRequestError
@@ -64,10 +64,14 @@ async def make_unified_request(
     data: Optional[Dict[str, Any]] = None,
     headers: Optional[Dict[str, str]] = None,
     files: Optional[Dict[str, Any]] = None,
-    timeout: float = 120.0
-) -> Dict[str, Any]:
+    timeout: float = 120.0,
+    stream: bool = False
+) -> Union[Dict[str, Any], str]:
     """
     统一的请求函数，用于所有非 MiniMax API 调用
+    
+    Args:
+        stream: 是否启用流式响应，如果为True，返回文本内容而非JSON
     """
     url = f"{UNIFIED_BASE_URL}{path}"
     default_headers = {
@@ -78,7 +82,7 @@ async def make_unified_request(
     
     if headers:
         default_headers.update(headers)
-    print("default_headers", default_headers)
+    
     async with httpx.AsyncClient(timeout=timeout) as client:
         try:
             if method.upper() == "POST":
@@ -94,7 +98,45 @@ async def make_unified_request(
                 raise ValueError(f"Unsupported HTTP method: {method}")
             
             response.raise_for_status()
-            return response.json()
+            
+            if stream:
+                # process stream response
+                content_parts = []
+                
+                async for chunk in response.aiter_text():
+                    if chunk:
+                        # split chunk by line, because it may contain multiple lines of data
+                        lines = chunk.split('\n')
+                        for line in lines:
+                            line = line.strip()
+                            if not line:
+                                continue
+                                
+                            # check if it is SSE data format
+                            if line.startswith('data: '):
+                                try:
+                                    # extract JSON data
+                                    json_str = line[6:]  # remove 'data: ' prefix
+                                    json_data = json.loads(json_str)
+                                    
+                                    # extract content
+                                    if (isinstance(json_data, dict) and 
+                                        'data' in json_data and 
+                                        isinstance(json_data['data'], dict) and 
+                                        'content' in json_data['data']):
+                                        content = json_data['data']['content']
+                                        if content:  # only collect non-empty content
+                                            content_parts.append(content)
+                                    
+                                except json.JSONDecodeError:
+                                    # if parsing fails, continue to process the next line
+                                    continue
+                
+                # merge all content parts and return
+                return ''.join(content_parts)
+            else:
+                # process normal JSON response
+                return response.json()
             
         except httpx.HTTPStatusError as e:
             error_msg = f"HTTP error {e.response.status_code}"
@@ -1474,9 +1516,10 @@ async def kling_query_ttv_task(
     Function: Generate a anime character based on a text prompt
 
     Args:
-        prompt (str): The prompt describing the anime character to generate,English.
+        prompt (str): The prompt describing the anime character to generate,only support English.
         gender (str): The gender of the anime character to generate. 0-male, 1-female, 2-other
-        model_style (str): The style of the anime character to generate. values range: Games
+        model_style (str): The style of the anime character to generate. values range: ["Games", "Series", "Manhwa", "Comic", "Illustration"],
+            notes: Games-游戏, Series-番剧, Manhwa-韩漫, Comic-漫画专用, Illustration-插画,
 
     Returns:
         task_id (str): The task ID of the anime character generation task.
@@ -1485,6 +1528,8 @@ async def gbu_ugc_tti(
     prompt: str,
     gender: int,
     model_style: str,
+    max_retries: int = 10,
+    retry_interval: int = 5
 ) -> TextContent:
     try:
         model_style_mapping = {
@@ -1505,53 +1550,39 @@ async def gbu_ugc_tti(
             data=data,
         )
         
-        return TextContent(
-            type="text",
-            text=f"Success. Anime character generation task created: {response_data}"
-        )
-        
-    except Exception as e:
-        return TextContent(
-            type="text",
-            text=f"Failed to create anime character generation task: {str(e)}"
-        )
-
-@mcp.tool(description="""
-    Function: Query the status of a anime character generation task
-
-    Args:
-        task_id (str): The task ID of the anime character generation task.
-
-    Returns:
-        status (str): The status of the anime character generation task.
-""")
-async def gbu_ugc_tti_task(
-    task_id: str,
-) -> TextContent:
-    try:
+        # get task_id, and start polling task status
+        task_id = response_data.get("data", {}).get("task_id")
         if not task_id:
-            raise Exception("Task ID is required") 
+            raise Exception("Task ID is not found")
         
-        data = {
-            "task_id": task_id,
-        }
+        # polling task status
+        for attempt in range(max_retries):
+            task_response = await make_unified_request(
+                method="POST",
+                path=f"/pulsar/mcp/inner/comic/query_task",
+                data={"task_id": task_id},
+            )
 
-        response_data = await make_unified_request(
-            method="POST",
-            path=f"/pulsar/mcp/inner/comic/query_task",
-            data=data,
-        )
+            errno = task_response.get('errno')
+            if errno == 0: 
+                return TextContent(
+                    type="text",
+                    text=f"Success. Anime character generation completed: {task_response}"
+                )
+            elif errno not in [0, 2200]: #2200，task is running
+                raise Exception(f"Anime character generation task failed for task_id: {task_id}")       
+            
+            # Wait before retrying
+            await asyncio.sleep(retry_interval)
 
-        return TextContent(
-            type="text",
-            text=f"Success. Anime character generation task status: {response_data}"
-        )
-        
+        raise Exception(f"Anime character generation task did not complete in time for task_id: {task_id}")
+
     except Exception as e:
         return TextContent(
             type="text",
-            text=f"Failed to query anime character generation task status: {str(e)}"
+            text=f"Failed to generate and query anime character: {str(e)}"
         )
+
 
 
 
@@ -1566,6 +1597,8 @@ async def gbu_ugc_tti_task(
 """)
 async def gbu_anime_pose_align(
     image_url: str,
+    max_retries: int = 10,
+    retry_interval: int = 3
 ) -> TextContent:
     try:
         if not image_url:
@@ -1581,60 +1614,53 @@ async def gbu_anime_pose_align(
             data=data,
         )
         
-        return TextContent(
-            type="text",
-            text=f"Success. Pose align task created: {response_data}"
-        )
-        
-    except Exception as e:
-        return TextContent(
-            type="text",
-            text=f"Failed to create pose align task: {str(e)}"
-        )
-
-@mcp.tool(description="""
-    Function: Query the status of a pose align image generation task
-""")
-async def gbu_anime_pose_align_task(
-    task_id: str,
-) -> TextContent:
-    try:
+        # get task_id, and start polling task status
+        task_id = response_data.get("data", {}).get("task_id")
         if not task_id:
-            raise Exception("Task ID is required")
+            raise Exception("Task ID is not found")
         
-        data = {
-            "task_id": task_id,
-        }
+        # polling task status
+        for attempt in range(max_retries):
+            task_response = await make_unified_request(
+                method="POST",
+                path=f"/pulsar/mcp/inner/comic/query_task",
+                data={"task_id": task_id},
+            )
+            
+            errno = task_response.get('errno')
+            if errno == 0: 
+                return TextContent(
+                    type="text",
+                    text=f"Success. Pose align task completed: {task_response}"
+                )
+            elif errno not in [0, 2200]: #2200，task is running
+                raise Exception(f"Pose align task failed for task_id: {task_id}")       
 
-        response_data = await make_unified_request(
-            method="POST",
-            path=f"/pulsar/mcp/inner/comic/query_task",         
-            data=data,
-        )
-        
-        return TextContent(
-            type="text",
-            text=f"Success. Pose align task status: {response_data}"
-        )   
-        
+            # Wait before retrying
+            await asyncio.sleep(retry_interval)
+
+        raise Exception(f"Pose align task did not complete in time for task_id: {task_id}")
+
     except Exception as e:
         return TextContent(
             type="text",
-            text=f"Failed to query pose align task status: {str(e)}"
-        )  
+            text=f"Failed to generate and query pose align: {str(e)}"
+        )
+
 
 
 @mcp.tool(description="""
     Function: Generate a comic image based on prompt, scene_type,char_image and char_gender
 
     Args:
-        prompt (str): The prompt for the comic image.
+        prompt (str): The prompt for the comic image.Only support English.
         scene_type (str): The scene type for the comic image. value range: ["nc", "single", "double"],nc-no character,single-single character,double-double character
-        char1_image (str): The URL of the character1 image pose align.
+        char1_image (str): The URL of the character1 image pose align. if scene_type="nc", value should be the first character pose align image url, not empty.
         char2_image (str): The URL of the character2 image pose align. value = "" if scene_type in ["nc", "single"]
         char1_gender (str): The gender of the character1. value range: ["0", "1"], 0-male,1-female
         char2_gender (str): The gender of the character2. value range: ["0", "1"], 0-male,1-female, value = "" if scene_type in ["nc", "single"]
-        model_style (str): The style of the comic image. value range: ["Games"]
+            model_style (str): The style of the comic image. value range: ["Games", "Series", "Manhwa", "Comic", "Illustration"],
+                notes: Games-游戏, Series-番剧, Manhwa-韩漫, Comic-漫画专用, Illustration-插画,
 
     Returns:
         task_id (str): The task ID of the comic image generation task.
@@ -1647,11 +1673,19 @@ async def gbu_anime_comic_image(
     char1_gender: str,
     char2_gender: str,
     model_style: str,
+    max_retries: int = 10,
+    retry_interval: int = 10        
 ) -> TextContent:
     try:
         char2_image = "" if scene_type in ["nc", "single"] else char2_image
         char2_gender = "" if scene_type in ["nc", "single"] else char2_gender
-        
+
+        model_style_mapping = {
+            "Games": "onediff_v1_animagine-xl-3.1.safetensors", 
+            
+        }
+        model_name = model_style_mapping.get(model_style, "Games")
+
         data = {
             "prompt": prompt,
             "scene_type": scene_type,
@@ -1659,7 +1693,7 @@ async def gbu_anime_comic_image(
             "char2_image": char2_image,
             "char1_gender": char1_gender,
             "char2_gender": char2_gender,
-            "model_style": model_style,
+            "model_name": model_name,
         }
 
         response_data = await make_unified_request(
@@ -1668,11 +1702,34 @@ async def gbu_anime_comic_image(
             data=data,
         )
         
-        return TextContent(
-            type="text",
-            text=f"Success. Comic image generation task created: {response_data}"
-        )
+        # get task_id, and start polling task status
+        task_id = response_data.get("data", {}).get("task_id")
+        if not task_id:
+            raise Exception("Task ID is not found")
         
+        # polling task status
+        for attempt in range(max_retries):
+            task_response = await make_unified_request(
+                method="POST",
+                path=f"/pulsar/mcp/inner/comic/query_task",
+                data={"task_id": task_id},
+            )
+            
+            errno = task_response.get('errno')
+            if errno == 0:
+                    
+                    return TextContent(
+                    type="text",
+                    text=f"Success. Comic image generation task completed: {task_response}"
+                )
+            elif errno not in [0, 2200]: #2200，task is running
+                raise Exception(f"Comic image generation task failed for task_id: {task_id}")       
+
+            # Wait before retrying
+            await asyncio.sleep(retry_interval)
+
+        raise Exception(f"Comic image generation task did not complete in time for task_id: {task_id}")
+    
     except Exception as e:
         return TextContent( 
             type="text",
@@ -1681,42 +1738,235 @@ async def gbu_anime_comic_image(
 
 
 @mcp.tool(description="""
-    Function: Query the status of comic image generation task
+    Function: Generate comic script story based on topic input using streaming response
 
     Args:
-        task_id (str): The task ID of the comic image generation task.
+        topic_input (str): The topic or theme for the comic script to generate (supports Japanese).
+                          Example: "海をテーマにしたシナリオをください" (Please provide a scenario themed around the ocean)
 
     Returns:
-        task_status (str): The status of the comic image generation task.
+        TextContent: Contains the generated comic script content
 """)
-async def gbu_anime_comic_image_task(
-    task_id: str,
+async def gbu_generate_comic_story(
+    topic_input: str
 ) -> TextContent:
     try:
-        if not task_id:
-            raise Exception("Task ID is required")
+        if not topic_input:
+            raise Exception("Topic input is required")
+
+        payload = {
+            "topic_input": topic_input
+        }
+
+        # 使用流式请求调用漫画脚本生成API
+        response_data = await make_unified_request(
+            method="POST",
+            path="/pulsar/mcp/inner/comic/generate_script",
+            data=payload,
+            stream=True  # 启用流式响应
+        )
         
-        data = {
-            "task_id": task_id,
+        # 返回生成的脚本内容
+        return TextContent(
+            type="text",
+            text=response_data
+        )
+        
+    except Exception as e:
+        return TextContent(
+            type="text",
+            text=f"failed to generate comic script story: {str(e)}"
+        )
+
+@mcp.tool(description="""
+    Function: Generate comic story chapters based on novel input, character info and chapter number.
+
+    Args:
+        input_novel (str): The novel input, required.
+        chars_info (str or dict): The characters info. Supports both dictionary objects and JSON strings.
+                          Example: {"char1": {"name": "Jack", "gender": "male"}, "char2": {"name": "Mary", "gender": "female"}}
+        chapters_num (int): The number of chapters to generate, default is 4, max is 15.
+
+    Returns:
+        TextContent: Contains the generated comic story chapters content
+""")
+async def gbu_generate_comic_chapters(
+    input_novel: str,
+    chars_info: Union[str, dict],
+    chapters_num: int = 10
+) -> TextContent:
+    try:
+        if not input_novel:
+            raise Exception("input_novel is required")
+        if not chars_info:
+            raise Exception("chars_info is required")
+       
+        
+        if isinstance(chars_info, str):
+            chars_info = json.loads(chars_info)
+        elif isinstance(chars_info, dict):
+            chars_info = chars_info
+        else:
+            raise Exception("chars_info must be a dictionary or JSON string")
+        
+        # 将字典转换为JSON字符串发送给API
+        chars_info_json = json.dumps(chars_info, ensure_ascii=False)
+        
+        payload = {
+            "input_novel": input_novel,
+            "chars_info": chars_info_json,
+            "chapter_num": chapters_num
+        }
+                
+        response_data = await make_unified_request(
+            method="POST",
+            path="/pulsar/mcp/inner/comic/generate_storyboards",
+            data=payload,
+            stream=True
+        )
+        
+      
+        
+        return TextContent(
+            type="text",
+            text=response_data
+        )
+        
+    except Exception as e:
+        return TextContent(
+            type="text",
+            text=f"failed to generate comic story chapters: {str(e)}"
+        )       
+
+
+@mcp.tool(description="""
+    Function: Generate image prompts based on comic story chapter and character info.
+    Args:
+        input_chapters (str or dict): The comic story chapter input (text分镜结构体), required.
+        chars_info (str or dict): The characters info. Supports both dictionary objects and JSON strings.
+                          Example: {"char1": {"name": "Jack", "gender": "male"}, "char2": {"name": "Mary", "gender": "female"}}
+    Returns:
+        TextContent: Contains the generated image prompts content
+""")
+async def gbu_generate_comic_image_prompts(
+    input_chapters: Union[str, dict],
+    chars_info: Union[str, dict],
+) -> TextContent:
+    try:
+        if not input_chapters:
+            raise Exception("input_chapters is required")
+        if not chars_info:
+            raise Exception("chars_info is required")
+        
+        if isinstance(chars_info, str):
+            chars_info = json.loads(chars_info)
+        elif isinstance(chars_info, dict):
+            chars_info = chars_info
+        else:
+            raise Exception("chars_info must be a dictionary or JSON string")
+        
+        if isinstance(input_chapters, str):
+            input_chapters = json.loads(input_chapters)
+        elif isinstance(input_chapters, dict):
+            input_chapters = input_chapters
+        else:
+            raise Exception("input_chapters must be a dictionary or JSON string")
+        
+        chars_info_json = json.dumps(chars_info, ensure_ascii=False)
+        input_chapters_json = json.dumps(input_chapters, ensure_ascii=False)
+
+        payload = {
+            "input_chapter": input_chapters_json,
+            "chars_info": chars_info_json
         }
         
         response_data = await make_unified_request(
             method="POST",
-            path=f"/pulsar/mcp/inner/comic/query_task",         
-            data=data,
+            path="/pulsar/mcp/inner/comic/prompt_format",
+            data=payload,
+            stream=True
         )
+        
         
         return TextContent(
             type="text",
-            text=f"Success. Comic image generation task status: {response_data}"
+            text=response_data
         )
         
-    except Exception as e:  
+    except Exception as e:
         return TextContent(
             type="text",
-            text=f"Failed to query comic image generation task status: {str(e)}"
+            text=f"failed to generate comic image prompts: {str(e)}"
         )
+
+@mcp.tool(description="""
+    Function: edit image based on image url and image prompts.
+    Args:
+        image_url (str): The URL of the image to edit.
+        image_prompt (str): The prompt for the image to edit.Only support English.
+        max_retries (int): The maximum number of retries.
+        retry_interval (int): The interval between retries.
+    Returns:
+        TextContent: Contains the generated image content
+""")
+async def gbu_flux_edit_image(
+    image_url: str,
+    image_prompt: str,
+    max_retries: int = 20,
+    retry_interval: int = 5
+) -> TextContent:
+    try:
+        if not image_url:
+            raise Exception("image_url is required")
+        if not image_prompt:
+            raise Exception("image_prompts is required")
+        
+        payload = {
+            "image_url": image_url,
+            "edit_prompt": image_prompt
+        }
+        
+        response_data = await make_unified_request(
+            method="POST",
+            path="/pulsar/mcp/inner/comic/edit",
+            data=payload,
+        )
+
+        task_id = response_data.get("data", {}).get("task_id")
+        if not task_id:
+            raise Exception(f"task_id is required,response_data: {response_data}")
+        
+        # polling task status
+        for attempt in range(max_retries):
+            task_response = await make_unified_request(
+                method="POST",
+                path=f"/pulsar/mcp/inner/comic/query_task",
+                data={"task_id": task_id},
+            )
+            
+            errno = task_response.get('errno')
+            if errno == 0: 
+                return TextContent(
+                    type="text",
+                    text=f"Success. Pose align task completed: {task_response}"
+                )
+            elif errno not in [0, 2200]: #2200，task is running
+                raise Exception(f"Pose align task failed for task_id: {task_id}")       
+
+            # Wait before retrying
+            await asyncio.sleep(retry_interval)
+
+        raise Exception(f"flux edit image task did not complete in time for task_id: {task_id}")
     
+    except Exception as e:
+        return TextContent(
+            type="text",
+            text=f"failed to edit image: {str(e)}"
+        )
+
+
+
+
 
 
 
