@@ -1518,8 +1518,9 @@ async def kling_query_ttv_task(
     Args:
         prompt (str): The prompt describing the anime character to generate,only support English.
         gender (str): The gender of the anime character to generate. 0-male, 1-female, 2-other
-        model_style (str): The style of the anime character to generate. values range: ["Games", "Series", "Manhwa", "Comic", "Illustration"],
-            notes: Games-游戏, Series-番剧, Manhwa-韩漫, Comic-漫画专用, Illustration-插画,
+        model_style (str): The style of the comic image. value range: ["Games", "Series", "Manhwa", "Comic", "Illustration"],
+            notes: The following shows each model_style's corresponding Chinese and Japanese expressions:
+            Games(游戏 / ゲーム), Series(番剧 / TVアニメ), Manhwa(韩漫 / 韓国漫画), Comic(漫画专用 / カラフル), Illustration(插画 / イラスト)
 
     Returns:
         task_id (str): The task ID of the anime character generation task.
@@ -1528,20 +1529,23 @@ async def gbu_ugc_tti(
     prompt: str,
     gender: int,
     model_style: str,
-    max_retries: int = 10,
-    retry_interval: int = 5
+    max_retries: int = 50,
+    retry_interval: int = 2
 ) -> TextContent:
     try:
         model_style_mapping = {
-            "Games": "onediff_v1_animagine-xl-3.1.safetensors", 
-            
+            "Games": "ugc_image_animagine", 
+            "Series": "ugc_image_animeseries",
+            "Manhwa": "ugc_image_koreanComics",
+            "Comic": "ugc_create_illlustrious",
+            "Illustration": "ugc_image_awpainting",
         }
-        model_name = model_style_mapping.get(model_style, "Games")
+        model_tag = model_style_mapping.get(model_style, "comic_image_waiNSFWv1")
 
         data = {
             "prompt": prompt,
             "gender": gender,
-            "model_name": model_name
+            "template_tag": model_tag
         }
 
         response_data = await make_unified_request(
@@ -1597,7 +1601,7 @@ async def gbu_ugc_tti(
 """)
 async def gbu_anime_pose_align(
     image_url: str,
-    max_retries: int = 10,
+    max_retries: int = 20,
     retry_interval: int = 3
 ) -> TextContent:
     try:
@@ -1659,8 +1663,9 @@ async def gbu_anime_pose_align(
         char2_image (str): The URL of the character2 image pose align. value = "" if scene_type in ["nc", "single"]
         char1_gender (str): The gender of the character1. value range: ["0", "1"], 0-male,1-female
         char2_gender (str): The gender of the character2. value range: ["0", "1"], 0-male,1-female, value = "" if scene_type in ["nc", "single"]
-            model_style (str): The style of the comic image. value range: ["Games", "Series", "Manhwa", "Comic", "Illustration"],
-                notes: Games-游戏, Series-番剧, Manhwa-韩漫, Comic-漫画专用, Illustration-插画,
+        model_style (str): The style of the comic image. value range: ["Games", "Series", "Manhwa", "Comic", "Illustration"],
+            notes: The following shows each model_style's corresponding Chinese and Japanese expressions:
+            Games(游戏 / ゲーム), Series(番剧 / TVアニメ), Manhwa(韩漫 / 韓国漫画), Comic(漫画专用 / カラフル), Illustration(插画 / イラスト)
 
     Returns:
         task_id (str): The task ID of the comic image generation task.
@@ -1673,18 +1678,22 @@ async def gbu_anime_comic_image(
     char1_gender: str,
     char2_gender: str,
     model_style: str,
-    max_retries: int = 10,
-    retry_interval: int = 10        
+    max_retries: int = 50,
+    retry_interval: int = 2       
 ) -> TextContent:
     try:
         char2_image = "" if scene_type in ["nc", "single"] else char2_image
         char2_gender = "" if scene_type in ["nc", "single"] else char2_gender
 
         model_style_mapping = {
-            "Games": "onediff_v1_animagine-xl-3.1.safetensors", 
+            "Games": "comic_image_animagine", 
+            "Series": "comic_image_animeseries",
+            "Manhwa": "comic_image_koreanComics",
+            "Comic": "comic_image_waiNSFWv1",
+            "Illustration": "comic_image_awpainting",
             
         }
-        model_name = model_style_mapping.get(model_style, "Games")
+        model_tag = model_style_mapping.get(model_style, "comic_image_waiNSFWv1")
 
         data = {
             "prompt": prompt,
@@ -1693,7 +1702,7 @@ async def gbu_anime_comic_image(
             "char2_image": char2_image,
             "char1_gender": char1_gender,
             "char2_gender": char2_gender,
-            "model_name": model_name,
+            "template_tag": model_tag,
         }
 
         response_data = await make_unified_request(
@@ -1842,7 +1851,7 @@ async def gbu_generate_comic_chapters(
 @mcp.tool(description="""
     Function: Generate image prompts based on comic story chapter and character info.
     Args:
-        input_chapters (str or dict): The comic story chapter input (text分镜结构体), required.
+        input_chapters (str or dict): The comic story chapter input, required.
         chars_info (str or dict): The characters info. Supports both dictionary objects and JSON strings.
                           Example: {"char1": {"name": "Jack", "gender": "male"}, "char2": {"name": "Mary", "gender": "female"}}
     Returns:
@@ -1965,9 +1974,112 @@ async def gbu_flux_edit_image(
         )
 
 
+@mcp.tool(description="""
+    Function: edit comic story based on edit prompt and input story.
+    Args:
+        edit_prompt (str): The edit prompt for the comic story, required.
+        input_story (str or dict): The input story, required.including story content and story title.format example:{"story_title": "xxx", "story": "xxx"}
+                          
+    Returns:
+        TextContent: Contains the generated comic story content
+""")
+async def gbu_edit_comic_story(
+    edit_prompt: str,
+    input_story: Union[str, dict],
+) -> TextContent:
+    try:
+        if not edit_prompt:
+            raise Exception("edit_prompt is required")
+        if not input_story:
+            raise Exception("input_story is required")
+        
+        if isinstance(input_story, str):
+            input_story = json.loads(input_story)
+        elif isinstance(input_story, dict):
+            input_story = input_story
+        else:
+            raise Exception("input_story must be a dictionary or JSON string") 
+        
+        input_story_json = json.dumps(input_story, ensure_ascii=False)
+
+        payload = {
+            "story_input": input_story_json,
+            "edit_prompt": edit_prompt
+        }
+        
+        response_data = await make_unified_request(
+            method="POST",
+            path="/pulsar/mcp/inner/comic/edit_script",
+            data=payload,
+            stream=True
+        )
+        
+        
+        return TextContent(
+            type="text",
+            text=response_data
+        )
+        
+    except Exception as e:
+        return TextContent(
+            type="text",
+            text=f"failed to generate comic image prompts: {str(e)}"
+        )
 
 
+@mcp.tool(description="""
+    Function: edit comic chapters based on edit prompt and input chapters.
+    Args:
+        edit_prompt (str): The edit prompt for the comic chapters, required.
+        input_chapters (str or dict): The input chapters, required.Format example:
+          {"title": "chapter_title", "chapter_image": {"1": {"description": "scene_desc", "dialogue": [{"name": "char_name", "text": "dialogue_text"}], "aside": "aside_text"}}}
+                          
+                          
+    Returns:
+        TextContent: Contains the generated comic chapters content
+""")
+async def gbu_edit_comic_chapters(
+    edit_prompt: str,
+    input_chapters: Union[str, dict],
+) -> TextContent:
+    try:
+        if not edit_prompt:
+            raise Exception("edit_prompt is required")
+        if not input_chapters:
+            raise Exception("input_chapters is required")
+        
+        if isinstance(input_chapters, str):
+            input_chapters = json.loads(input_chapters)
+        elif isinstance(input_chapters, dict):
+            input_chapters = input_chapters
+        else:
+            raise Exception("input_chapters must be a dictionary or JSON string") 
+        
+        input_chapters_json = json.dumps(input_chapters, ensure_ascii=False)
 
+        payload = {
+            "chapters_description_input": input_chapters_json,
+            "edit_prompt": edit_prompt
+        }
+        
+        response_data = await make_unified_request(
+            method="POST",
+            path="/pulsar/mcp/inner/comic/edit_storyboards",
+            data=payload,
+            stream=True
+        )
+        
+        
+        return TextContent(
+            type="text",
+            text=response_data
+        )
+        
+    except Exception as e:
+        return TextContent(
+            type="text",
+            text=f"failed to generate comic image prompts: {str(e)}"
+        )
 
 
 def main():
