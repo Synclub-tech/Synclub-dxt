@@ -1537,7 +1537,7 @@ async def gbu_ugc_tti(
             "Games": "ugc_image_animagine", 
             "Series": "ugc_image_animeseries",
             "Manhwa": "ugc_image_koreanComics",
-            "Comic": "ugc_create_illlustrious",
+            "Comic": "ugc_image_illlustrious",
             "Illustration": "ugc_image_awpainting",
         }
         model_tag = model_style_mapping.get(model_style, "comic_image_waiNSFWv1")
@@ -1556,6 +1556,7 @@ async def gbu_ugc_tti(
         
         # get task_id, and start polling task status
         task_id = response_data.get("data", {}).get("task_id")
+        cost_points = response_data.get("data", {}).get("cost_points")
         if not task_id:
             raise Exception("Task ID is not found")
         
@@ -1569,22 +1570,68 @@ async def gbu_ugc_tti(
 
             errno = task_response.get('errno')
             if errno == 0: 
+                img_data = task_response.get("data", {}).get("img_data", [])
+                images = []
+                for item in img_data:
+                    item_images = item.get('images', [])
+                    for img in item_images:
+                        if img.get('webp'):
+                            images.append({
+                                'url': img['webp'],
+                                'format': 'webp'
+                            })
+
+                final_result = {
+                    "task_id": task_id,
+                    "status": "generation success",
+                    "msg": task_response.get('msg', ''),
+                    "cost_points": cost_points,
+                    "input_parameters": data,
+                    "generated_images": images
+                }
                 return TextContent(
                     type="text",
-                    text=f"Success. Anime character generation completed: {task_response}"
+                    text=f"{final_result}"
                 )
             elif errno not in [0, 2200]: #2200，task is running
-                raise Exception(f"Anime character generation task failed for task_id: {task_id}")       
+                final_result = {
+                    "task_id": task_id,
+                    "status": "generation failed",
+                    "msg": task_response.get('msg', ''),
+                    "cost_points": cost_points,
+                    "input_parameters": data,
+                }
+                return TextContent(
+                    type="text",
+                    text=f"{final_result}"
+                )
             
             # Wait before retrying
             await asyncio.sleep(retry_interval)
 
-        raise Exception(f"Anime character generation task did not complete in time for task_id: {task_id}")
-
-    except Exception as e:
+        final_result = {
+            "task_id": task_id,
+            "status": "generation failed",
+            "msg": "Anime character generation task did not complete in time",
+            "cost_points": cost_points,
+            "input_parameters": data,
+        }
         return TextContent(
             type="text",
-            text=f"Failed to generate and query anime character: {str(e)}"
+            text=f"{final_result}"
+        )
+
+    except Exception as e:
+        final_result = {
+            "task_id": task_id,
+            "status": "generation failed",
+            "msg": f"Failed to generate and query anime character: {str(e)}",
+            "cost_points": cost_points,
+            "input_parameters": data,
+        }
+        return TextContent(
+            type="text",
+            text=f"{final_result}"
         )
 
 
@@ -1620,6 +1667,7 @@ async def gbu_anime_pose_align(
         
         # get task_id, and start polling task status
         task_id = response_data.get("data", {}).get("task_id")
+        cost_points = response_data.get("data", {}).get("cost_points")
         if not task_id:
             raise Exception("Task ID is not found")
         
@@ -1633,22 +1681,68 @@ async def gbu_anime_pose_align(
             
             errno = task_response.get('errno')
             if errno == 0: 
+                img_data = task_response.get("data", {}).get("img_data", [])
+                images = []
+                for item in img_data:
+                    item_images = item.get('images', [])
+                    for img in item_images:
+                        if img.get('webp'):
+                            images.append({
+                                'url': img['webp'],
+                                'format': 'webp'
+                            })
+
+                final_result = {
+                    "task_id": task_id,
+                    "status": "generation success",
+                    "msg": task_response.get('msg', ''),
+                    "cost_points": cost_points,
+                    "input_parameters": data,
+                    "generated_images": images
+                }
                 return TextContent(
                     type="text",
-                    text=f"Success. Pose align task completed: {task_response}"
+                    text=f"{final_result}"
                 )
-            elif errno not in [0, 2200]: #2200，task is running
-                raise Exception(f"Pose align task failed for task_id: {task_id}")       
+            elif errno not in [0, 2200]: #task failed(2200-task is running)
+                final_result = {
+                    "task_id": task_id,
+                    "status": "generation failed",
+                    "msg": task_response.get('msg', ''),
+                    "cost_points": cost_points,
+                    "input_parameters": data,
+                }
+                return TextContent(
+                    type="text",
+                    text=f"{final_result}"
+                )
 
             # Wait before retrying
             await asyncio.sleep(retry_interval)
 
-        raise Exception(f"Pose align task did not complete in time for task_id: {task_id}")
-
-    except Exception as e:
+        final_result = {
+            "task_id": task_id,
+            "status": "generation failed",
+            "msg": "Pose align task did not complete in time",
+            "cost_points": cost_points,
+            "input_parameters": data,
+        }
         return TextContent(
             type="text",
-            text=f"Failed to generate and query pose align: {str(e)}"
+            text=f"{final_result}"
+        )
+
+    except Exception as e:
+        final_result = {
+            "task_id": task_id,
+            "status": "generation failed",
+            "msg": f"Failed to generate and query pose align: {str(e)}",
+            "cost_points": cost_points,
+            "input_parameters": data,
+        }
+        return TextContent(
+            type="text",
+            text=f"{final_result}"
         )
 
 
@@ -1713,6 +1807,7 @@ async def gbu_anime_comic_image(
         
         # get task_id, and start polling task status
         task_id = response_data.get("data", {}).get("task_id")
+        cost_points = response_data.get("data", {}).get("cost_points")
         if not task_id:
             raise Exception("Task ID is not found")
         
@@ -1723,26 +1818,72 @@ async def gbu_anime_comic_image(
                 path=f"/pulsar/mcp/inner/comic/query_task",
                 data={"task_id": task_id},
             )
-            
+
             errno = task_response.get('errno')
-            if errno == 0:
+            if errno == 0:  # generation success      
+                img_data = task_response.get("data", {}).get("img_data", [])
+                images = []
+                for item in img_data:
+                    item_images = item.get('images', [])
+                    for img in item_images:
+                        if img.get('webp'):
+                            images.append({
+                                'url': img['webp'],
+                                'format': 'webp'
+                            })
+                
+                final_result = {
+                    "task_id": task_id,
+                    "status": "generation success",
+                    "msg": task_response.get('msg', ''),
+                    "cost_points": cost_points,
+                    "input_parameters": data,
+                    "generated_images": images,
+                }
                     
-                    return TextContent(
+                return TextContent(
+                type="text",
+                text=f"{final_result}"
+            )
+            elif errno not in [0, 2200]: #task failed(2200-task is running)
+                final_result = {
+                    "task_id": task_id,
+                    "status": "generation failed",
+                    "msg": task_response.get('msg', ''),
+                    "cost_points": cost_points,
+                    "input_parameters": data,
+                }
+                return TextContent(
                     type="text",
-                    text=f"Success. Comic image generation task completed: {task_response}"
+                    text=f"{final_result}"
                 )
-            elif errno not in [0, 2200]: #2200，task is running
-                raise Exception(f"Comic image generation task failed for task_id: {task_id}")       
 
             # Wait before retrying
             await asyncio.sleep(retry_interval)
-
-        raise Exception(f"Comic image generation task did not complete in time for task_id: {task_id}")
+        
+        final_result = {
+            "task_id": task_id,
+            "status": "generation failed",
+            "msg": "Comic image generation task did not complete in time",
+            "cost_points": cost_points,
+            "input_parameters": data,
+        }
+        return TextContent(
+            type="text",
+            text=f"{final_result}"
+        )
     
     except Exception as e:
+        final_result = {
+            "task_id": task_id,
+            "status": "generation failed",
+            "msg": f"Failed to create comic image generation task: {str(e)}",
+            "cost_points": cost_points,
+            "input_parameters": data,
+        }
         return TextContent( 
             type="text",
-            text=f"Failed to create comic image generation task: {str(e)}"
+            text=f"{final_result}"
         )
 
 
@@ -1793,7 +1934,7 @@ async def gbu_generate_comic_story(
     Args:
         input_novel (str): The novel input, required.
         chars_info (str or dict): The characters info. Supports both dictionary objects and JSON strings.
-                          Example: {"char1": {"name": "Jack", "gender": "male"}, "char2": {"name": "Mary", "gender": "female"}}
+            Example: {"char1": {"name": "Jack", "gender": "male"}, "char2": {"name": "Mary", "gender": "female"}}
         chapters_num (int): The number of chapters to generate, default is 4, max is 15.
 
     Returns:
