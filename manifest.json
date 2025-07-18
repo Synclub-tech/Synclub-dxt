@@ -1,0 +1,50 @@
+{
+  "dxt_version": "0.1",
+  "name": "synclub-dxt",
+  "version": "0.6.0",
+  "description": "SynClub Desktop Extension for text-to-speech, voice cloning, and video generation",
+  "author": {
+    "name": "baidu",
+    "email": "synclub@baidu.com"
+  },
+  "user_config": {
+    "SYNCLUB_MCP_API": {
+      "type": "string",
+      "title": "SynClub API Key",
+      "description": "填写您的 SynClub API Key，用于访问服务",
+      "required": true
+    },
+    "UNIFIED_API_BASE_URL": {
+      "type": "string",
+      "title": "Unified API Base URL",
+      "description": "填写后端统一接口的 Base URL，例如 http://example.com:8080",
+      "required": true
+    }
+  },
+  "server": {
+    "type": "node",
+    "entry_point": "src/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/src/index.js"
+      ],
+      "env": {
+        "SYNCLUB_MCP_API": "${user_config.SYNCLUB_MCP_API}",
+        "UNIFIED_API_BASE_URL": "${user_config.UNIFIED_API_BASE_URL}"
+      }
+    }
+  },
+  "license": "MIT",
+  "tools": [
+    { "name": "gbu_generate_comic_story", "description": "Generate a comic story based on input story theme" },
+    { "name": "gbu_generate_comic_chapters", "description": "Generate comic story chapters based on novel input, character info and chapter number" },
+    { "name": "gbu_generate_comic_image_prompts", "description": "Generate image prompts based on comic story chapter and character info" },
+    { "name": "gbu_edit_comic_story", "description": "Edit comic story based on edit prompt and input story" },
+    { "name": "gbu_edit_comic_chapters", "description": "Edit comic chapters based on edit prompt and input chapters" },
+    { "name": "gbu_ugc_tti", "description": "Generate an anime character based on a text prompt" },
+    { "name": "gbu_anime_pose_align", "description": "Generate a pose align image based on an anime character image" },
+    { "name": "gbu_anime_comic_image", "description": "Generate a comic image based on prompt" },
+    { "name": "gbu_flux_edit_image", "description": "Edit image based on image url and image prompts" }
+  ]
+} 
