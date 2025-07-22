@@ -4,8 +4,8 @@
   "version": "0.6.0",
   "description": "SynClub Desktop Extension for text-to-speech, voice cloning, and video generation",
   "author": {
-    "name": "baidu",
-    "email": "synclub@baidu.com"
+    "name": "Synclub",
+    "email": "520chatgpt01@bgmail.com"
   },
   "user_config": {
     "SYNCLUB_MCP_API": {
