@@ -64,113 +64,297 @@ const server = new Server(
 const TOOLS = [
   {
     name: 'gbu_generate_comic_story',
-    description: 'Generate a comic story based on input story theme',
+    description: `Generate a comic story based on topic input using streaming response.
+
+    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
+
+    Args:
+        topic_input (str): The topic or theme for the comic script to generate (supports Japanese).
+                          Example: "海をテーマにしたシナリオをください" (Please provide a scenario themed around the ocean)
+
+    Returns:
+        TextContent: Contains the generated comic script content
+    `,
     inputSchema: {
       type: 'object',
       properties: {
-        topic_input: { type: 'string', description: 'Story theme/topic' },
+        topic_input: { 
+          type: 'string', 
+          description: 'The topic or theme for the comic script'
+        },
       },
       required: ['topic_input'],
     },
   },
   {
     name: 'gbu_generate_comic_chapters',
-    description: 'Generate comic story chapters',
+    description: `Generate comic story chapters based on novel input, character info and chapter number.
+
+    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
+
+    Args:
+        input_novel (str): The novel input, required.
+        chars_info (str or dict): The characters info. Supports both dictionary objects and JSON strings.
+            Example: {"char1": {"name": "Jack", "gender": "male"}, "char2": {"name": "Mary", "gender": "female"}}
+        chapters_num (int): The number of chapters to generate, default is 4, max is 15.
+
+    Returns:
+        TextContent: Contains the generated comic story chapters content
+    `,
     inputSchema: {
       type: 'object',
       properties: {
-        input_novel: { type: 'string', description: 'Novel input' },
-        chars_info: { type: 'string', description: 'Characters info (JSON string)' },
-        chapter_num: { type: 'number', description: 'Number of chapters', default: 4 },
+        input_novel: { 
+          type: 'string', 
+          description: 'The novel content to generate chapters from'
+        },
+        chars_info: { 
+          type: 'string', 
+          description: 'Character information in JSON format'
+        },
+        chapters_num: { 
+          type: 'number', 
+          description: 'Number of chapters to generate', 
+          default: 4 
+        },
       },
       required: ['input_novel', 'chars_info'],
     },
   },
   {
     name: 'gbu_generate_comic_image_prompts',
-    description: 'Generate image prompts for comic chapter',
+    description: `Generate image prompts based on comic story chapter and character info.
+
+    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
+
+    Args:
+        input_chapters (str or dict): The comic story chapter input, required.
+        chars_info (str or dict): The characters info. Supports both dictionary objects and JSON strings.
+                          Example: {"char1": {"name": "Jack", "gender": "male"}, "char2": {"name": "Mary", "gender": "female"}}
+    Returns:
+        TextContent: Contains the generated image prompts content
+    `,
     inputSchema: {
       type: 'object',
       properties: {
-        input_chapters: { type: 'string', description: 'Chapter JSON' },
-        chars_info: { type: 'string', description: 'Characters info JSON' },
+        input_chapters: { 
+          type: 'string', 
+          description: 'Chapter content in JSON format'
+        },
+        chars_info: { 
+          type: 'string', 
+          description: 'Character information in JSON format'
+        },
       },
       required: ['input_chapters', 'chars_info'],
     },
   },
   {
     name: 'gbu_edit_comic_story',
-    description: 'Edit comic story',
+    description: `Edit comic story based on edit prompt and input story.
+
+    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
+
+    Args:
+        edit_prompt (str): The edit prompt for the comic story, required.
+        input_story (str or dict): The input story, required. Including story content and story title.
+                          Format example: {"story_title": "xxx", "story": "xxx"}
+                          
+    Returns:
+        TextContent: Contains the generated comic story content
+    `,
     inputSchema: {
       type: 'object',
       properties: {
-        edit_prompt: { type: 'string' },
-        input_story: { type: 'string', description: 'Story JSON' },
+        edit_prompt: { 
+          type: 'string',
+          description: 'Edit instructions describing how to modify the story'
+        },
+        input_story: { 
+          type: 'string',
+          description: 'Story content to be edited'
+        },
       },
       required: ['edit_prompt', 'input_story'],
     },
   },
   {
     name: 'gbu_edit_comic_chapters',
-    description: 'Edit comic chapters',
+    description: `Edit comic chapters based on edit prompt and input chapters.
+
+    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
+
+    Args:
+        edit_prompt (str): The edit prompt for the comic chapters, required.
+        input_chapters (str or dict): The input chapters, required. Format example:
+          {"title": "chapter_title", "chapter_image": {"1": {"description": "scene_desc", "dialogue": [{"name": "char_name", "text": "dialogue_text"}], "aside": "aside_text"}}}
+                          
+    Returns:
+        TextContent: Contains the generated comic chapters content
+    `,
     inputSchema: {
       type: 'object',
       properties: {
-        edit_prompt: { type: 'string' },
-        input_chapters: { type: 'string', description: 'Chapters JSON' },
+        edit_prompt: { 
+          type: 'string',
+          description: 'Edit instructions describing how to modify the chapters'
+        },
+        input_chapters: { 
+          type: 'string',
+          description: 'Chapter content to be edited'
+        },
       },
       required: ['edit_prompt', 'input_chapters'],
     },
   },
   {
     name: 'gbu_ugc_tti',
-    description: 'Generate an anime character based on text prompt',
+    description: `Generate an anime character based on a text prompt.
+
+    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
+
+    Args:
+        prompt (str): The prompt describing the anime character to generate (English only).
+        gender (int): The gender of the anime character to generate. 0-male, 1-female, 2-other
+        model_style (str): The style of the comic image. Values: ["Games", "Series", "Manhwa", "Comic", "Illustration"]
+            Notes: Each model_style corresponds to:
+            - Games (游戏 / ゲーム)
+            - Series (番剧 / TVアニメ)
+            - Manhwa (韩漫 / 韓国漫画)
+            - Comic (漫画专用 / カラフル)
+            - Illustration (插画 / イラスト)
+
+    Returns:
+        task_id (str): The task ID of the anime character generation task
+    `,
     inputSchema: {
       type: 'object',
       properties: {
-        prompt: { type: 'string' },
-        gender: { type: 'number' },
-        model_style: { type: 'string' },
+        prompt: { 
+          type: 'string',
+          description: 'Character description (English only)'
+        },
+        gender: { 
+          type: 'number',
+          description: 'Character gender (0-male, 1-female, 2-other)'
+        },
+        model_style: { 
+          type: 'string',
+          description: 'Art style for the character'
+        },
       },
       required: ['prompt', 'gender', 'model_style'],
     },
   },
   {
     name: 'gbu_anime_pose_align',
-    description: 'Generate pose align image',
+    description: `Generate a pose align image based on an anime character image.
+
+    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
+
+    Args:
+        image_url (str): The URL of the character image.
+
+    Returns:
+        task_id (str): The task ID of the pose align image generation task
+    `,
     inputSchema: {
       type: 'object',
       properties: {
-        image_url: { type: 'string' },
+        image_url: { 
+          type: 'string',
+          description: 'URL of the character image to align'
+        },
       },
       required: ['image_url'],
     },
   },
   {
     name: 'gbu_anime_comic_image',
-    description: 'Generate comic image',
+    description: `Generate a comic image based on prompt and character settings.
+
+    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
+
+    Args:
+        prompt (str): The prompt for the comic image (English only).
+        scene_type (str): The scene type. Values: ["nc", "single", "double"]
+            nc - no character
+            single - single character
+            double - double character
+        char1_image (str): URL of character1's pose-aligned image. Required even for nc type.
+        char2_image (str): URL of character2's pose-aligned image. Empty for nc/single types.
+        char1_gender (str): Gender of character1. Values: ["0", "1"] (0-male, 1-female)
+        char2_gender (str): Gender of character2. Values: ["0", "1"]. Empty for nc/single types.
+        model_style (str): Art style. Values: ["Games", "Series", "Manhwa", "Comic", "Illustration"]
+
+    Returns:
+        task_id (str): The task ID of the comic image generation task
+    `,
     inputSchema: {
       type: 'object',
       properties: {
-        prompt: { type: 'string' },
-        scene_type: { type: 'string' },
-        char1_image: { type: 'string' },
-        char2_image: { type: 'string' },
-        char1_gender: { type: 'string' },
-        char2_gender: { type: 'string' },
-        model_style: { type: 'string' },
+        prompt: { 
+          type: 'string',
+          description: 'Scene description (English only)'
+        },
+        scene_type: { 
+          type: 'string',
+          description: 'Scene type (nc/single/double)'
+        },
+        char1_image: { 
+          type: 'string',
+          description: 'URL of first character image'
+        },
+        char2_image: { 
+          type: 'string',
+          description: 'URL of second character image'
+        },
+        char1_gender: { 
+          type: 'string',
+          description: 'Gender of first character'
+        },
+        char2_gender: { 
+          type: 'string',
+          description: 'Gender of second character'
+        },
+        model_style: { 
+          type: 'string',
+          description: 'Art style for the image'
+        },
       },
       required: ['prompt', 'scene_type', 'char1_image', 'char1_gender', 'model_style'],
     },
   },
   {
     name: 'gbu_flux_edit_image',
-    description: 'Edit image based on prompt',
+    description: `Edit image based on image url and prompt.
+
+    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
+
+    Args:
+        image_url (str): The URL of the image to edit.
+        image_prompt (str): The prompt describing how to edit the image. Only supports English.
+            Format: 
+            1. Clearly specify elements to remove
+            2. Clearly specify elements to keep
+            3. Describe replacement background details
+            4. Mention key visual elements like horizon, lighting
+            Example: "Remove [elements], replace with [new elements], keep [elements], [additional details]"
+
+    Returns:
+        TextContent: Contains the edited image URL or task status.
+    `,
     inputSchema: {
       type: 'object',
       properties: {
-        image_url: { type: 'string' },
-        image_prompt: { type: 'string' },
+        image_url: { 
+          type: 'string',
+          description: 'The URL of the image to edit'
+        },
+        image_prompt: { 
+          type: 'string',
+          description: 'The prompt describing how to edit the image (English only)'
+        },
       },
       required: ['image_url', 'image_prompt'],
     },
@@ -240,20 +424,72 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (name === 'gbu_edit_comic_story') {
       const { edit_prompt, input_story } = args;
       if (!edit_prompt || !input_story) throw new Error('edit_prompt 和 input_story 必填');
-      payload = { edit_prompt, input_story: typeof input_story === 'string' ? input_story : JSON.stringify(input_story) };
+      payload = { 
+        edit_prompt, 
+        story_input: input_story
+      };
+      // use SSE aggregation
+      const script = await collectSSE(endpoint, payload);
+      return { content: [{ type: 'text', text: script }], isError: false };
     }
     if (name === 'gbu_edit_comic_chapters') {
       const { edit_prompt, input_chapters } = args;
       if (!edit_prompt || !input_chapters) throw new Error('edit_prompt 和 input_chapters 必填');
-      payload = { edit_prompt, input_chapters: typeof input_chapters === 'string' ? input_chapters : JSON.stringify(input_chapters) };
+      payload = { 
+        edit_prompt, 
+        chapters_description_input: input_chapters
+      };
+      // use SSE aggregation
+      const script = await collectSSE(endpoint, payload);
+      return { content: [{ type: 'text', text: script }], isError: false };
     }
     if (name === 'gbu_flux_edit_image') {
       const { image_url, image_prompt } = args;
       if (!image_url || !image_prompt) throw new Error('image_url 和 image_prompt 必填');
-      payload = { image_url, edit_prompt: image_prompt };
+      
+      payload = { 
+        image_url, 
+        edit_prompt: image_prompt
+      };
+      
+      const resp = await apiClient.post(endpoint, { data: payload });
+      
+      // 获取task_id并开始轮询
+      const taskId = resp?.data?.task_id;
+      if (!taskId) {
+        throw new Error(`task_id is required, response_data: ${JSON.stringify(resp)}`);
+      }
+      
+      // 轮询任务状态
+      for (let i = 0; i < 20; i++) {
+        await new Promise(res => setTimeout(res, 5000));
+        
+        const statusResp = await apiClient.post('/pulsar/mcp/inner/comic/query_task', { 
+          data: { task_id: taskId }
+        });
+        
+        const errno = statusResp?.errno;
+        if (errno === 0) {
+          // 任务完成，返回结果
+          return {
+            content: [{
+              type: 'text',
+              text: `Success. Task completed: ${JSON.stringify(statusResp)}`
+            }],
+            isError: false
+          };
+        }
+        
+        // 如果任务失败
+        if (errno && errno !== 0 && errno !== 2200) {
+          throw new Error(`Task failed for task_id: ${taskId}`);
+        }
+      }
+      
+      throw new Error(`Task did not complete in time for task_id: ${taskId}`);
     }
     // Tools that stream responses but we want aggregated output
-    if (['gbu_generate_comic_story', 'gbu_generate_comic_image_prompts', 'gbu_generate_comic_chapters'].includes(name)) {
+    if (['gbu_generate_comic_story', 'gbu_generate_comic_image_prompts', 'gbu_generate_comic_chapters', 'gbu_edit_comic_story', 'gbu_edit_comic_chapters'].includes(name)) {
       const textResult = await collectSSE(endpoint, payload);
       return { content: [{ type: 'text', text: textResult }], isError: false };
     }
@@ -279,7 +515,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
     }
     // 需要轮询查询任务的工具
-    if (['gbu_anime_comic_image', 'gbu_anime_pose_align', 'gbu_ugc_tti'].includes(name)) {
+    if (['gbu_anime_comic_image', 'gbu_anime_pose_align', 'gbu_ugc_tti', 'gbu_flux_edit_image'].includes(name)) {
       // 如果直接带 img_data 则解析
       const processImgData = (imgData) => {
         const urls = [];
