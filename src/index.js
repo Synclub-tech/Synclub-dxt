@@ -470,14 +470,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         
         const errno = statusResp?.errno;
         if (errno === 0) {
-          // 任务完成，返回结果
-          return {
-            content: [{
-              type: 'text',
-              text: `Success. Task completed: ${JSON.stringify(statusResp)}`
-            }],
-            isError: false
-          };
+          // 处理图片数据
+          const imgData = statusResp?.data?.img_data;
+          if (imgData && Array.isArray(imgData) && imgData.length > 0) {
+            const images = imgData[0].images || [];
+            const urls = [];
+            for (const img of images) {
+              const url = img.webp || img.url || img;
+              if (url) {
+                urls.push(url);
+              }
+            }
+            
+            return {
+              content: [{
+                type: 'text',
+                text: urls.join('\n')
+              }],
+              isError: false
+            };
+          }
         }
         
         // 如果任务失败
