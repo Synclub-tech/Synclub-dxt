@@ -5,6 +5,8 @@ Designed specifically for comic creation, MCP-SynClub-Generate-Comic integrates 
 
 You can install **MCP-SynClub-Generate-Comic** on Claude Desktop with a single click using the `.dxt` Desktop Extension.
 
+![Script Editing](https://i.postimg.cc/SRSJWSp3/2025-07-23-15-35-43.png
+
 ## Core  Features
 
 - 🔖 **Script Generation**
@@ -48,8 +50,8 @@ dxt pack
       - Weather: Blizzard
       - Plot: An overbearing CEO (A) meets a little girl (B) in need of help, and they eventually fall in love.
 - **Output Example**:
-  ![Script Generation](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/1-%E5%89%A7%E6%9C%AC%E7%94%9F%E6%88%90.png)
-  ![Script Editing](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/2-%E5%89%A7%E6%9C%AC%E7%BC%96%E8%BE%91.png)
+  ![Script Generation](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/1-Script%20Generation.png)
+  ![Script Editing](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/2-Script%20Editing.png)
 
 ### 🧑‍🎨 Step 2-Character Image Generation
 
@@ -57,7 +59,8 @@ dxt pack
 - **Base Style Selection**: Choose from five base styles (Korean manhwa, game, illustration, anime, manga) via user input.
 - **Prompt Example**: "I want an illustration-style image. The female lead has long, wavy brown hair with bangs and fair skin. The male lead is muscular, with tanned skin and a cheerful smile."
 - **Output Example**:
-  ![Character Image Generation](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/2-%E8%A7%92%E8%89%B2%E5%BD%A2%E8%B1%A1%E7%94%9F%E6%88%90.png)
+  ![Character Image Generation](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/2-Character%20Image%20Generation.png)
+  ![All Characters](https://raw.githubusercontent.com/520chatgpt01/Synclub-dxt/main/image/all_characters.jpg)
 
 ### 📖 Step 3 - Text Storyboard Creation
 
@@ -95,8 +98,8 @@ dxt pack
 
 - **Output Example**:
 
-![Panel Generation](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/4-%E5%9B%BE%E7%89%87%E5%88%86%E9%95%9C%E7%94%9F%E6%88%90.png)
-![Chapter 1 Comic Page](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/%E7%AC%AC%E4%B8%80%E7%AB%A0%E5%9B%BE%E7%89%87.webp)
+![Panel Generation](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/4-Panel%20Generation.png)
+![Chapter 1 Comic Page](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/Chapter%201%20Comic%20Page.png)
 
 ### Project Structure
 
@@ -122,7 +125,7 @@ Synclub-mcp-server-dxt/
 ### Core Tools - Essential Tools for Comic Generation
 
 | Tool name                                  | Description                                                                                                                                                 |
-| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| :----------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`generate_comic_story`**         | Generates a comic script from input themes and a plot summary.                                                                                              |
 | **`generate_comic_chapters`**      | Generates chapter content based on the comic script                                                                                                         |
 | **`ugc_tti`**                      | Generates character images.Please describe the you want to generate, such as character actions, expressions, environment, camera movement, and angles, etc. |
@@ -133,7 +136,7 @@ Synclub-mcp-server-dxt/
 ### Advanced Tools - For Modifying Generated Results
 
 | Tool name                         | Description                                                                                                                                                                       |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| :-------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`edit_comic_story`**    | Edits the generated comic story                                                                                                                                                   |
 | **`edit_comic_chapters`** | Edits the generated comic chapters                                                                                                                                                |
 | **`flux_edit_image`**     | Edit images from natural language commands. Supported operations include local adjustments (e.g., cropping, color correction), background replacement, style transfers, and more. |
@@ -154,4 +157,6 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 
 [https://github.com/520chatgpt01/Synclub-mcp-server](https://github.com/520chatgpt01/Synclub-mcp-server)
 
-**`🎉 Covers the full comic creation workflow, from scriptwriting to comic image generation—ideal for AI-assisted comic creation!`** 🎨✨`<h1 align="center">`SynClub MCP Server `</h1>`
+**`🎉 Covers the full comic creation workflow, from scriptwriting to comic image generation—ideal for AI-assisted comic creation!`** 🎨✨
+
+<h1 align="center">SynClub MCP Server</h1>
