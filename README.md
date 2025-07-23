@@ -87,8 +87,6 @@ dxt pack
 
 <img src="https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/2-Character%20Image%20Generation.png" width="300" alt="Character Image Generation">
 
-`<img src="https://raw.githubusercontent.com/520chatgpt01/Synclub-dxt/main/image/all_characters.jpg " width="300" alt="All Characters">`
-
 ### 📖 Step 3 - Text Storyboard Creation
 
 - **Description**:
