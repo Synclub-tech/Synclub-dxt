@@ -1,4 +1,3 @@
-
 # MCP-SynClub-Generate-Comic -Claude-dxt
 
 Designed specifically for comic creation, MCP-SynClub-Generate-Comic integrates the full creative workflow, including scriptwriting, character image generation, and storyboard creation.
@@ -93,13 +92,13 @@ dxt pack
   You can make detailed adjustments to elements such as colors, hairstyles, facial expressions, and more.
   Simply describe what you want to change. For example:
 
-  * “Change hair color to brown”
-  * “Make the shirt white”
+  * "Change hair color to brown"
+  * "Make the shirt white"
 
 - **Output Example**:
 
 ![Panel Generation](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/4-Panel%20Generation.png)
-![Chapter 1 Comic Page](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/Chapter%201%20Comic%20Page.png)
+![Comic Page](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/comic_page.jpg)
 
 ### Project Structure
 
@@ -152,11 +151,3 @@ Synclub-mcp-server-dxt/
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/520chatgpt01/Synclub-dxt/blob/main/LICENSE) file for details.
-
-## From
-
-[https://github.com/520chatgpt01/Synclub-mcp-server](https://github.com/520chatgpt01/Synclub-mcp-server)
-
-**`🎉 Covers the full comic creation workflow, from scriptwriting to comic image generation—ideal for AI-assisted comic creation!`** 🎨✨
-
-<h1 align="center">SynClub MCP Server</h1>
