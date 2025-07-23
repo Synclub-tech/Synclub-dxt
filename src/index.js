@@ -63,7 +63,7 @@ const server = new Server(
 // Replace entire TOOLS array with corrected schemas
 const TOOLS = [
   {
-    name: 'gbu_generate_comic_story',
+    name: 'generate_comic_story',
     description: `Generate a comic story based on topic input using streaming response.
 
     COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
@@ -87,7 +87,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'gbu_generate_comic_chapters',
+    name: 'generate_comic_chapters',
     description: `Generate comic story chapters based on novel input, character info and chapter number.
 
     COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
@@ -122,7 +122,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'gbu_generate_comic_image_prompts',
+    name: 'generate_comic_image_prompts',
     description: `Generate image prompts based on comic story chapter and character info.
 
     COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
@@ -150,7 +150,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'gbu_edit_comic_story',
+    name: 'edit_comic_story',
     description: `Edit comic story based on edit prompt and input story.
 
     COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
@@ -179,7 +179,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'gbu_edit_comic_chapters',
+    name: 'edit_comic_chapters',
     description: `Edit comic chapters based on edit prompt and input chapters.
 
     COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
@@ -208,7 +208,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'gbu_ugc_tti',
+    name: 'ugc_tti',
     description: `Generate an anime character based on a text prompt.
 
     COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
@@ -247,7 +247,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'gbu_anime_pose_align',
+    name: 'anime_pose_align',
     description: `Generate a pose align image based on an anime character image.
 
     COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
@@ -270,7 +270,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'gbu_anime_comic_image',
+    name: 'anime_comic_image',
     description: `Generate a comic image based on prompt and character settings.
 
     COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
@@ -326,7 +326,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'gbu_flux_edit_image',
+    name: 'flux_edit_image',
     description: `Edit image based on image url and prompt.
 
     COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
@@ -391,7 +391,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       throw new Error(`No endpoint mapping for tool ${name}`);
     }
     let payload = args;
-    if (name === 'gbu_generate_comic_image_prompts') {
+    if (name === 'generate_comic_image_prompts') {
       const { input_chapters, chars_info } = args;
       if (!input_chapters || !chars_info) {
         throw new Error('input_chapters 和 chars_info 均为必填');
@@ -401,7 +401,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         chars_info: typeof chars_info === 'string' ? chars_info : JSON.stringify(chars_info),
       };
     }
-    if (name === 'gbu_generate_comic_chapters') {
+    if (name === 'generate_comic_chapters') {
       const { input_novel, chars_info, chapters_num } = args;
       if (!input_novel || !chars_info) {
         throw new Error('input_novel 和 chars_info 必填');
@@ -412,7 +412,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         chapter_num: chapters_num ?? 4,
       };
     }
-    if (name === 'gbu_generate_comic_story') {
+    if (name === 'generate_comic_story') {
       let { topic_input, theme } = args;
       topic_input = topic_input || theme;
       if (!topic_input) throw new Error('topic_input 必填');
@@ -421,7 +421,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const script = await collectSSE(endpoint, payload);
       return { content: [{ type: 'text', text: script }], isError: false };
     }
-    if (name === 'gbu_edit_comic_story') {
+    if (name === 'edit_comic_story') {
       const { edit_prompt, input_story } = args;
       if (!edit_prompt || !input_story) throw new Error('edit_prompt 和 input_story 必填');
       payload = { 
@@ -432,7 +432,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const script = await collectSSE(endpoint, payload);
       return { content: [{ type: 'text', text: script }], isError: false };
     }
-    if (name === 'gbu_edit_comic_chapters') {
+    if (name === 'edit_comic_chapters') {
       const { edit_prompt, input_chapters } = args;
       if (!edit_prompt || !input_chapters) throw new Error('edit_prompt 和 input_chapters 必填');
       payload = { 
@@ -443,7 +443,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const script = await collectSSE(endpoint, payload);
       return { content: [{ type: 'text', text: script }], isError: false };
     }
-    if (name === 'gbu_flux_edit_image') {
+    if (name === 'flux_edit_image') {
       const { image_url, image_prompt } = args;
       if (!image_url || !image_prompt) throw new Error('image_url 和 image_prompt 必填');
       
@@ -501,7 +501,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       throw new Error(`Task did not complete in time for task_id: ${taskId}`);
     }
     // Tools that stream responses but we want aggregated output
-    if (['gbu_generate_comic_story', 'gbu_generate_comic_image_prompts', 'gbu_generate_comic_chapters', 'gbu_edit_comic_story', 'gbu_edit_comic_chapters'].includes(name)) {
+    if (['generate_comic_story', 'generate_comic_image_prompts', 'generate_comic_chapters', 'edit_comic_story', 'edit_comic_chapters'].includes(name)) {
       const textResult = await collectSSE(endpoint, payload);
       return { content: [{ type: 'text', text: textResult }], isError: false };
     }
@@ -509,7 +509,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const resp = await apiClient.post(endpoint, { data: payload });
 
     // story 任务可能返回 task_id，需要轮询
-    if (name === 'gbu_generate_comic_story') {
+    if (name === 'generate_comic_story') {
       if (resp?.data?.task_id) {
         const taskId = resp.data.task_id;
         const queryEndpoint = '/pulsar/mcp/inner/comic/query_task';
