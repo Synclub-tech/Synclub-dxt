@@ -1,119 +1,117 @@
-<h1 align="center">SynClub MCP Server</h1>
+# SynClub-Generate-Comic -Claude-dxt
 
-<p align="center">
-  Official SynClub Model Context Protocol (MCP) Server that enables powerful AI generation capabilities including text-to-speech, voice cloning, video generation, image generation, and more. Compatible with MCP clients like <a href="https://www.anthropic.com/claude">Claude Desktop</a>, <a href="https://www.cursor.so">Cursor</a>, <a href="https://codeium.com/windsurf">Windsurf</a>, and others.
-</p>
+The MCP-SynClub-Generate-Comic, tailored for comic creation, integrates the entire workflow, including scriptwriting, character design, and storyboard creation.
+
+You can install **SynClub-Generate-Comic**  on Claude Desktop with one click by using a `.dxt` file as a Desktop Extension.
 
 ## Features
 
--  **Text-to-Speech**: Convert text to natural speech with multiple voice options
--  **Voice Cloning**: Clone voices from audio samples
--  **Video Generation**: Generate videos from text prompts or images
--  **Image Generation**: Create images from text descriptions
--  **Image Recognition**: Analyze and understand image content
--  **Background Removal**: Automatically remove backgrounds from images
--  **HD Image Restoration**: Enhance image quality and resolution
--  **AI Search**: Intelligent search with AI-powered results
--  **Japanese TTS**: Specialized Japanese text-to-speech
+### Core Features
 
-## Quick Start
+- 🔖 **Script Generation**
+- 🧑‍🎨 **Character Image Generation**
+- 🎬 **Storyboard Creation**
+- 🎨 **Comic Generation**
 
-### 1. Install uv (Python Package Manager)
+## Installation-For Claude Desktop
+
+#### Quick Install
 
 ```bash
-# macOS/Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Windows (PowerShell)
-powershell -c "irm https://astral.sh/uv/install.sh | iex"
-
-# Or via package managers
-# brew install uv
-# pip install uv
+1. Open Claude Desktop  
+2. Go to Settings → Extensions → Browse Extensions → Desktop Extensions → Advanced Settings
+3. Click "Install Extension" and select the `.dxt` file  
+4. Enter the API key obtained from https://www.synclubmcp.com/
+5. Go to Settings → Developer → synclub-dxt, if it shows **"running"**, the installation was successful
 ```
 
-### 2. Get Your API Key
+## Usage Guide
 
-Obtain your API key from your account information page on the SynClub server website.
+**1 - Script Generation**
 
-### 3. Configure Your MCP Client
+- **Description**: Generates a comic script based on themes and summaries. If there are parts of the generated script that are unsatisfactory, adjustments can be made through instructions.
+- **Prompt Input**
+  - **Tips**: You can describe it in one sentence or use a structured output.
+  - **Prompt Input Examples**:
+    - **One-sentence description**: "A high school love story with a cool, academic female lead and a sunny, handsome athlete."
+    - **Structured output example**: Scene: A mountaintop villa; Weather: Blizzard; Plot: Overbearing CEO A meets a little girl B who needs help, and they eventually fall in love.
 
-#### Claude Desktop
+**2 - Character Design Generation**
 
-**Step 1: find your config file**
-You can find your config file at:
-- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **Description**: Generates character designs based on the provided appearance description, character gender, and selected base style. If there are parts of the generated character design that are unsatisfactory, adjustments can be made through instructions.
+- **Base style selection**: Choose one of five base styles (Korean manhwa / game / illustration / anime / manga-specific) through dialogue.
+- **Prompt Input Example**: "The overall style is illustration. The female lead has long, wavy brown hair with bangs and fair skin. The male lead is muscular, with a healthy complexion and a cheerful smile."
 
-Or you can find your config file in claude setting:
+**3 - Text Storyboard Creation**
 
-Click claude setting:
-![Configuration Example](https://raw.githubusercontent.com/520chatgpt01/Synclub-mcp-server/refs/heads/main/image/a573ab2ed4900d8b2478b6d5b91f78e0.jpg)
+- **Description**: Based on the finalized script from Step 1 and the character information from Step 2, generates text storyboard results for a specified number of chapters (4–15 chapters). Each chapter includes a chapter description, character dialogue, and narration. If there are parts of the generated text storyboard that are unsatisfactory, adjustments can be made through instructions.
+- **Generated Result Example**:
+  - Chapter 1: The Promise of Cherry Blossoms
+  - Description: A classroom bathed in spring warmth. Cherry blossom petals flutter outside the window.
+  - Dialogue:
+    - Yota Sato: "Hey, Takahashi-san, want to walk home together after school?"
+    - Misaki Takahashi: "I have studying to do."
+  - Narration: A fleeting glance at her fingertips.
 
-Edit config file:
-![Configuration Example](https://raw.githubusercontent.com/520chatgpt01/Synclub-mcp-server/refs/heads/main/image/7e790df2aefa5dee0aeb40735ac12124.jpg)
+**4 - Comic Generation**
 
-Open config file:
-![Configuration Example](https://raw.githubusercontent.com/520chatgpt01/Synclub-mcp-server/refs/heads/main/image/ccdfa55185c0f5f4d07a6b7fdf93c0d6.jpg)
+- **Description**: First, finalize the character designs from Step 2. Then, convert the text storyboards from Step 3 into image prompts (this process is done automatically and not explicitly shown in the dialogue). Based on the generated image prompts and character information from Step 2, generate multiple comic images according to the number of chapters.
 
-**Step 2: append this config to your own file**
+### Project Structure
 
-```json
-{
-  "mcpServers": {
-    "SynClub": {
-      "command": "uvx",
-      "args": [
-          "synclub-mcp"
-      ],
-      "env": {
-          "SYNCLUB_MCP_API": "your api key"
-      }
-    }
-  }
-}
+```
+Synclub-mcp-server-dxt/
+├── src/                   # Source code directory
+│   ├── index.js           # Main entry file, Contains the implementation of all tools
+│   └── client.js          # API client implementation
+│
+├── image/                 # Directory for images used in documentation and examples
+│
+├── node_modules/          # Directory for dependencies installed via npm(generated by npm install)
+│
+├── package.json           # Project configuration file, defines dependencies, scripts, and metadata
+├── package-lock.json      # Dependency lock file to ensure consistent version installation
+├── manifest.json          # MCP server configuration file that defines凭 available tools and features
+├── README.md              # Project documentation, including installation and usage instructions
+└── LICENSE                # MIT license file
 ```
 
-If you have any problem with the command uvx, try to use the command `which uvx` to find the absolute path of uvx and replace the command in the config file.
+### Available Tools
 
-**step 3：save and restart your claude application**
-- **important：make sure to restart claude that your config file will update and check the connection in claude developer**
+### Core Tools - Essential Tools for Comic Generation
 
-##  Available Tools
+| Tool name                                  | Description                                                                    |
+| ------------------------------------------ | ------------------------------------------------------------------------------ |
+| **`generate_comic_story`**         | Generates the comic story                                                      |
+| **`generate_comic_chapters`**      | Generates chapter content based on the comic story                             |
+| **`ugc_tti`**                      | Generates character images                                                     |
+| **`anime_pose_align`**             | Aligns the generated character images for the final comic image generation     |
+| **`generate_comic_image_prompts`** | Generates prompts required for image generation tasks based on chapter content |
+| **`anime_comic_image`**            | Submits comic image generation tasks based on prompts and returns the task ID  |
 
-| Tool Name | Description |
-|-----------|-------------|
-| `minimax_text_to_audio` | Convert text to speech with customizable voice settings |
-| `minimax_generate_video` | Minimax generate videos |
-| `minimax_voice_clone` | Clone voices from audio files |
-| `minimax_text_to_image` | Generate images from text prompts |
-| `kling_generate_text_to_video` | Start generate videos from text descriptions using Kling models|
-| `kling_query_ttv_task` | Get the generate result from generate_text_to_video tool|
-| `kling_generate_image_to_video` | Start generate videos from images with text prompts using Kling models|
-| `kling_query_gttv_task` | Get the generate result from generate_image_to_video tool|
-| `openai_image_recognition` | Analyze and recognize image content |
-| `gbu_remove_bg` | Automatically remove image backgrounds |
-| `gbu_hd_restore` | Enhance image quality and resolution |
-| `openai_generate_image` | Generate images using alternative models |
-| `gbu_ai_search` | Perform AI-powered search queries |
-| `gbu_japanese_tts` | Japanese text-to-speech conversion |
-| `gbu_generate_comic_story` | Generate a comic story based on input story theme |
-| `gbu_generate_comic_chapters` | Generate comic story chapters based on novel input, character info and chapter number |
-| `gbu_generate_comic_image_prompts` | Generate image prompts based on comic story chapter and character info |
-| `gbu_edit_comic_story` | Edit comic story based on edit prompt and input story. |
-| `gbu_edit_comic_chapters` | Edit comic chapters based on edit prompt and input chapters. |
-| `gbu_ugc_tti` | Generate a anime character based on a text prompt |
-| `gbu_anime_pose_align` | Generate a pose align image based on an anime character image |
-| `gbu_anime_comic_image` | Generate a comic image based on prompt |
-| `gbu_flux_edit_image` | edit image based on image url and image prompts |
+### Advanced Tools - For Modifying Generated Results
 
-### Environment Variables
+| Tool name                         | Description                        |
+| --------------------------------- | ---------------------------------- |
+| **`edit_comic_story`**    | Edits the generated comic story    |
+| **`edit_comic_chapters`** | Edits the generated comic chapters |
+| **`flux_edit_image`**     | Edits the generated comic images   |
 
-- `SYNCLUB_MCP_API`: Your API key (required)
+## Requirements
+
+- **Claude Desktop** (with developer mode enabled)
+- **Node.js 14+** (for building from source)
+
+  - Confirm steps: Go to Settings → Extensions → Browse Extensions → Desktop Extensions → Advanced Settings → Detected Tools.
+  - If Node.js **<** 14, please update the Claude client.
+- **Both support:** macOS, Windows, Linux
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/520chatgpt01/Synclub-dxt/blob/main/LICENSE) file for details.
 
 ## From
-https://github.com/520chatgpt01/Synclub-mcp-server
+
+[https://github.com/520chatgpt01/Synclub-mcp-server](https://github.com/520chatgpt01/Synclub-mcp-server)
+
+**🎉 Covers the entire comic creation workflow! From scriptwriting to comic image generation — perfect for AI-assisted comic creation!** 🎨✨`<h1 align="center">`SynClub MCP Server`</h1>`

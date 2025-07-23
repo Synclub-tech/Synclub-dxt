@@ -37,14 +37,14 @@
   },
   "license": "MIT",
   "tools": [
-    { "name": "gbu_generate_comic_story", "description": "Generate a comic story based on input story theme" },
-    { "name": "gbu_generate_comic_chapters", "description": "Generate comic story chapters based on novel input, character info and chapter number" },
-    { "name": "gbu_generate_comic_image_prompts", "description": "Generate image prompts based on comic story chapter and character info" },
-    { "name": "gbu_edit_comic_story", "description": "Edit comic story based on edit prompt and input story" },
-    { "name": "gbu_edit_comic_chapters", "description": "Edit comic chapters based on edit prompt and input chapters" },
-    { "name": "gbu_ugc_tti", "description": "Generate an anime character based on a text prompt" },
-    { "name": "gbu_anime_pose_align", "description": "Generate a pose align image based on an anime character image" },
-    { "name": "gbu_anime_comic_image", "description": "Generate a comic image based on prompt" },
-    { "name": "gbu_flux_edit_image", "description": "Edit image based on image url and image prompts" }
+    { "name": "generate_comic_story", "description": "Generate a comic story based on input story theme" },
+    { "name": "generate_comic_chapters", "description": "Generate comic story chapters based on novel input, character info and chapter number" },
+    { "name": "generate_comic_image_prompts", "description": "Generate image prompts based on comic story chapter and character info" },
+    { "name": "edit_comic_story", "description": "Edit comic story based on edit prompt and input story" },
+    { "name": "edit_comic_chapters", "description": "Edit comic chapters based on edit prompt and input chapters" },
+    { "name": "ugc_tti", "description": "Generate an anime character based on a text prompt" },
+    { "name": "anime_pose_align", "description": "Generate a pose align image based on an anime character image" },
+    { "name": "anime_comic_image", "description": "Generate a comic image based on prompt" },
+    { "name": "flux_edit_image", "description": "Edit image based on image url and image prompts" }
   ]
 } 

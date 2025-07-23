@@ -363,15 +363,15 @@ const TOOLS = [
 
 // 工具到后端 API 路径映射
 const ENDPOINT_MAP = {
-  gbu_generate_comic_story: '/pulsar/mcp/inner/comic/generate_script',
-  gbu_generate_comic_chapters: '/pulsar/mcp/inner/comic/generate_storyboards',
-  gbu_generate_comic_image_prompts: '/pulsar/mcp/inner/comic/prompt_format',
-  gbu_edit_comic_story: '/pulsar/mcp/inner/comic/edit_script',
-  gbu_edit_comic_chapters: '/pulsar/mcp/inner/comic/edit_storyboards',
-  gbu_ugc_tti: '/pulsar/mcp/inner/comic/generate_role',
-  gbu_anime_pose_align: '/pulsar/mcp/inner/comic/pose_straighten',
-  gbu_anime_comic_image: '/pulsar/mcp/inner/comic/generate_comic',
-  gbu_flux_edit_image: '/pulsar/mcp/inner/comic/edit',
+  generate_comic_story: '/pulsar/mcp/inner/comic/generate_script',
+  generate_comic_chapters: '/pulsar/mcp/inner/comic/generate_storyboards',
+  generate_comic_image_prompts: '/pulsar/mcp/inner/comic/prompt_format',
+  edit_comic_story: '/pulsar/mcp/inner/comic/edit_script',
+  edit_comic_chapters: '/pulsar/mcp/inner/comic/edit_storyboards',
+  ugc_tti: '/pulsar/mcp/inner/comic/generate_role',
+  anime_pose_align: '/pulsar/mcp/inner/comic/pose_straighten',
+  anime_comic_image: '/pulsar/mcp/inner/comic/generate_comic',
+  flux_edit_image: '/pulsar/mcp/inner/comic/edit',
 };
 // tools/list handler
 server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: TOOLS }));
@@ -527,7 +527,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
     }
     // 需要轮询查询任务的工具
-    if (['gbu_anime_comic_image', 'gbu_anime_pose_align', 'gbu_ugc_tti', 'gbu_flux_edit_image'].includes(name)) {
+    if (['anime_comic_image', 'anime_pose_align', 'ugc_tti', 'flux_edit_image'].includes(name)) {
       // 如果直接带 img_data 则解析
       const processImgData = (imgData) => {
         const urls = [];
