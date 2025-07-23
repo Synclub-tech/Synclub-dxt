@@ -18,7 +18,7 @@ You can install **MCP-SynClub-Generate-Comic** on Claude Desktop with a single c
 * **How to get the .dxt file**
 
 ```
-git clone https://github.com/520chatgpt01/Synclub-dxt
+git clone https://github.com/Synclub-tech/Synclub-dxt
 cd synclub-dxt
 npm install
 npm install -g @anthropic-ai/dxt
@@ -49,8 +49,8 @@ dxt pack
       - Weather: Blizzard
       - Plot: An overbearing CEO (A) meets a little girl (B) in need of help, and they eventually fall in love.
 - **Output Example**:
-  ![Script Generation](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/1-Script%20Generation.png)
-  ![Script Editing](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/2-Script%20Editing.png)
+  ![Script Generation](https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/1-Script%20Generation.png)
+  ![Script Editing](https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/2-Script%20Editing.png)
 
 ### 🧑‍🎨 Step 2-Character Image Generation
 
@@ -58,8 +58,8 @@ dxt pack
 - **Base Style Selection**: Choose from five base styles (Korean manhwa, game, illustration, anime, manga) via user input.
 - **Prompt Example**: "I want an illustration-style image. The female lead has long, wavy brown hair with bangs and fair skin. The male lead is muscular, with tanned skin and a cheerful smile."
 - **Output Example**:
-  ![Character Image Generation](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/2-Character%20Image%20Generation.png)
-  ![All Characters](https://raw.githubusercontent.com/520chatgpt01/Synclub-dxt/main/image/all_characters.jpg)
+  ![Character Image Generation](https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/2-Character%20Image%20Generation.png)
+  ![All Characters](https://raw.githubusercontent.com/Synclub-tech/Synclub-dxt/main/image/all_characters.jpg)
 
 ### 📖 Step 3 - Text Storyboard Creation
 
@@ -97,8 +97,8 @@ dxt pack
 
 - **Output Example**:
 
-![Panel Generation](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/4-Panel%20Generation.png)
-![Comic Page](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/comic_page.jpg)
+![Panel Generation](https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/4-Panel%20Generation.png)
+![Chapter 1 Comic Page](https://raw.githubusercontent.com/Synclub-tech/Synclub-dxt/main/image/Chapter%201%20Comic%20Page.webp)
 
 ### Project Structure
 
@@ -150,4 +150,4 @@ Synclub-mcp-server-dxt/
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/520chatgpt01/Synclub-dxt/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/Synclub-tech/Synclub-dxt/blob/main/LICENSE) file for details.
