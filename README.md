@@ -1,23 +1,38 @@
+
 # MCP-SynClub-Generate-Comic -Claude-dxt
 
-Designed specifically for comic creation, MCP-SynClub-Generate-Comic integrates the full creative workflow, including scriptwriting, character image generation, and storyboard creation.
+MCP-SynClub-Generate-Comic is powered by services provided by [synclubmcp](https://synclubmcp.com).Designed specifically for comic creation, MCP-SynClub-Generate-Comic integrates the full creative workflow, including scriptwriting, character image generation, and storyboard creation.
 
 You can install **MCP-SynClub-Generate-Comic** on Claude Desktop with a single click using the `.dxt` Desktop Extension.
-
-![Script Editing](https://i.postimg.cc/SRSJWSp3/2025-07-23-15-35-43.png
 
 ## Core  Features
 
 - 🔖 **Script Generation**
 - 🧑‍🎨 **Character Image Generation**
-- 📖  **Storyboard Creation**
+- 📖 **Storyboard Creation**
 - 🖼️ **Comic Generation**
+
+## 🌐 About SynClub MCP
+
+* **[https://synclubmcp.com/](https://synclubmcp.com/)** is a MCP Server platform that provides access to MCP Server calls and integrated capability services.
+* The platform supports three languages: Chinese, Japanese, and English.
+
+### 🔧 Features
+
+* **MCP Server List**
+  The homepage features an *MCP Server List* section where you can find detailed descriptions, usage instructions, and the list of tools included in each server.
+* **Pricing**
+  Click the **Pricing** button in the navigation bar to view the pricing information for tool usage.
+* **Documentation**
+  Click the **Docs** button to access comprehensive documentation related to server configuration and usage.
+* **Key**
+  After logging in, you can retrieve your personal  **Key** from the user profile section.
 
 ## Installation-For Claude Desktop
 
 * **How to get the .dxt file**
 
-```
+```bash
 git clone https://github.com/Synclub-tech/Synclub-dxt
 cd synclub-dxt
 npm install
@@ -31,8 +46,17 @@ dxt pack
 1. Open Claude Desktop  
 2. Go to Settings → Extensions → Browse Extensions → Desktop Extensions → Advanced Settings
 3. Click "Install Extension" and select the `.dxt` file  
-4. Enter the API key obtained from https://www.synclubmcp.com/
+4. Enter the  key obtained from https://www.synclubmcp.com/
 5. Go to Settings → Developer → synclub-dxt, if it shows **"running"**, the installation was successful
+```
+
+* **Steps to Obtain Your API Key**
+
+```bash
+1. [ Visit SynClub MCP](https://synclubmcp.com/)
+2. Sign in with your User ID and password
+3. Click the user profile dropdown menu
+4. Copy your API key from the  Key section
 ```
 
 ## Usage Guide
@@ -49,8 +73,10 @@ dxt pack
       - Weather: Blizzard
       - Plot: An overbearing CEO (A) meets a little girl (B) in need of help, and they eventually fall in love.
 - **Output Example**:
-  ![Script Generation](https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/1-Script%20Generation.png)
-  ![Script Editing](https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/2-Script%20Editing.png)
+
+<img src="https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/1-Script%20Generation.png" width="300" alt="Script Generation">
+
+<img src="https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/2-Script%20Editing.png" width="300" alt="Script Editing">
 
 ### 🧑‍🎨 Step 2-Character Image Generation
 
@@ -58,8 +84,10 @@ dxt pack
 - **Base Style Selection**: Choose from five base styles (Korean manhwa, game, illustration, anime, manga) via user input.
 - **Prompt Example**: "I want an illustration-style image. The female lead has long, wavy brown hair with bangs and fair skin. The male lead is muscular, with tanned skin and a cheerful smile."
 - **Output Example**:
-  ![Character Image Generation](https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/2-Character%20Image%20Generation.png)
-  ![All Characters](https://raw.githubusercontent.com/Synclub-tech/Synclub-dxt/main/image/all_characters.jpg)
+
+<img src="https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/2-Character%20Image%20Generation.png" width="300" alt="Character Image Generation">
+
+`<img src="https://raw.githubusercontent.com/520chatgpt01/Synclub-dxt/main/image/all_characters.jpg " width="300" alt="All Characters">`
 
 ### 📖 Step 3 - Text Storyboard Creation
 
@@ -97,8 +125,8 @@ dxt pack
 
 - **Output Example**:
 
-![Panel Generation](https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/4-Panel%20Generation.png)
-![Chapter 1 Comic Page](https://raw.githubusercontent.com/Synclub-tech/Synclub-dxt/main/image/Chapter%201%20Comic%20Page.webp)
+<img src="https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/4-Panel%20Generation.png" width="300" alt="Panel Generation">
+<img src="https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/Chapter%201%20Comic%20Page.webp" width="300" alt="Chapter 1 Comic Page">
 
 ### Project Structure
 
@@ -151,3 +179,7 @@ Synclub-mcp-server-dxt/
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/Synclub-tech/Synclub-dxt/blob/main/LICENSE) file for details.
+
+```
+
+```
