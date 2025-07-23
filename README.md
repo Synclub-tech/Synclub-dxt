@@ -59,10 +59,6 @@ dxt pack
 - **Output Example**:
   ![Character Image Generation](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/2-%E8%A7%92%E8%89%B2%E5%BD%A2%E8%B1%A1%E7%94%9F%E6%88%90.png)
 
-![Male Character](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/%E7%94%B7%E4%B8%BB%E5%BD%A2%E8%B1%A1.webp)
-
-![Female Character](https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/%E5%A5%B3%E4%B8%BB%E5%BD%A2%E8%B1%A1.webp)
-
 ### 📖 Step 3 - Text Storyboard Creation
 
 - **Description**:
@@ -116,7 +112,7 @@ Synclub-mcp-server-dxt/
 │
 ├── package.json           # Project configuration file, defines dependencies, scripts, and metadata
 ├── package-lock.json      # Dependency lock file to ensure consistent version installation
-├── manifest.json          # MCP server configuration file that defines凭 available tools and features
+├── manifest.json          # MCP server configuration file that defines available tools and features
 ├── README.md              # Project documentation, including installation and usage instructions
 └── LICENSE                # MIT license file
 ```
