@@ -122,92 +122,6 @@ const TOOLS = [
     },
   },
   {
-    name: 'generate_comic_image_prompts',
-    description: `Generate image prompts based on comic story chapter and character info.
-
-    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
-
-    Args:
-        input_chapters (str or dict): The comic story chapter input, required.
-        chars_info (str or dict): The characters info. Supports both dictionary objects and JSON strings.
-                          Example: {"char1": {"name": "Jack", "gender": "male"}, "char2": {"name": "Mary", "gender": "female"}}
-    Returns:
-        TextContent: Contains the generated image prompts content
-    `,
-    inputSchema: {
-      type: 'object',
-      properties: {
-        input_chapters: { 
-          type: 'string', 
-          description: 'Chapter content in JSON format'
-        },
-        chars_info: { 
-          type: 'string', 
-          description: 'Character information in JSON format'
-        },
-      },
-      required: ['input_chapters', 'chars_info'],
-    },
-  },
-  {
-    name: 'edit_comic_story',
-    description: `Edit comic story based on edit prompt and input story.
-
-    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
-
-    Args:
-        edit_prompt (str): The edit prompt for the comic story, required.
-        input_story (str or dict): The input story, required. Including story content and story title.
-                          Format example: {"story_title": "xxx", "story": "xxx"}
-                          
-    Returns:
-        TextContent: Contains the generated comic story content
-    `,
-    inputSchema: {
-      type: 'object',
-      properties: {
-        edit_prompt: { 
-          type: 'string',
-          description: 'Edit instructions describing how to modify the story'
-        },
-        input_story: { 
-          type: 'string',
-          description: 'Story content to be edited'
-        },
-      },
-      required: ['edit_prompt', 'input_story'],
-    },
-  },
-  {
-    name: 'edit_comic_chapters',
-    description: `Edit comic chapters based on edit prompt and input chapters.
-
-    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
-
-    Args:
-        edit_prompt (str): The edit prompt for the comic chapters, required.
-        input_chapters (str or dict): The input chapters, required. Format example:
-          {"title": "chapter_title", "chapter_image": {"1": {"description": "scene_desc", "dialogue": [{"name": "char_name", "text": "dialogue_text"}], "aside": "aside_text"}}}
-                          
-    Returns:
-        TextContent: Contains the generated comic chapters content
-    `,
-    inputSchema: {
-      type: 'object',
-      properties: {
-        edit_prompt: { 
-          type: 'string',
-          description: 'Edit instructions describing how to modify the chapters'
-        },
-        input_chapters: { 
-          type: 'string',
-          description: 'Chapter content to be edited'
-        },
-      },
-      required: ['edit_prompt', 'input_chapters'],
-    },
-  },
-  {
     name: 'ugc_tti',
     description: `Generate an anime character based on a text prompt.
 
@@ -270,6 +184,34 @@ const TOOLS = [
     },
   },
   {
+    name: 'generate_comic_image_prompts',
+    description: `Generate image prompts based on comic story chapter and character info.
+
+    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
+
+    Args:
+        input_chapters (str or dict): The comic story chapter input, required.
+        chars_info (str or dict): The characters info. Supports both dictionary objects and JSON strings.
+                          Example: {"char1": {"name": "Jack", "gender": "male"}, "char2": {"name": "Mary", "gender": "female"}}
+    Returns:
+        TextContent: Contains the generated image prompts content
+    `,
+    inputSchema: {
+      type: 'object',
+      properties: {
+        input_chapters: { 
+          type: 'string', 
+          description: 'Chapter content in JSON format'
+        },
+        chars_info: { 
+          type: 'string', 
+          description: 'Character information in JSON format'
+        },
+      },
+      required: ['input_chapters', 'chars_info'],
+    },
+  },
+  {
     name: 'anime_comic_image',
     description: `Generate a comic image based on prompt and character settings.
 
@@ -323,6 +265,64 @@ const TOOLS = [
         },
       },
       required: ['prompt', 'scene_type', 'char1_image', 'char1_gender', 'model_style'],
+    },
+  },
+  {
+    name: 'edit_comic_story',
+    description: `Edit comic story based on edit prompt and input story.
+
+    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
+
+    Args:
+        edit_prompt (str): The edit prompt for the comic story, required.
+        input_story (str or dict): The input story, required. Including story content and story title.
+                          Format example: {"story_title": "xxx", "story": "xxx"}
+                          
+    Returns:
+        TextContent: Contains the generated comic story content
+    `,
+    inputSchema: {
+      type: 'object',
+      properties: {
+        edit_prompt: { 
+          type: 'string',
+          description: 'Edit instructions describing how to modify the story'
+        },
+        input_story: { 
+          type: 'string',
+          description: 'Story content to be edited'
+        },
+      },
+      required: ['edit_prompt', 'input_story'],
+    },
+  },
+  {
+    name: 'edit_comic_chapters',
+    description: `Edit comic chapters based on edit prompt and input chapters.
+
+    COST WARNING: This tool makes an API call which may incur costs. Only use when explicitly requested by the user.
+
+    Args:
+        edit_prompt (str): The edit prompt for the comic chapters, required.
+        input_chapters (str or dict): The input chapters, required. Format example:
+          {"title": "chapter_title", "chapter_image": {"1": {"description": "scene_desc", "dialogue": [{"name": "char_name", "text": "dialogue_text"}], "aside": "aside_text"}}}
+                          
+    Returns:
+        TextContent: Contains the generated comic chapters content
+    `,
+    inputSchema: {
+      type: 'object',
+      properties: {
+        edit_prompt: { 
+          type: 'string',
+          description: 'Edit instructions describing how to modify the chapters'
+        },
+        input_chapters: { 
+          type: 'string',
+          description: 'Chapter content to be edited'
+        },
+      },
+      required: ['edit_prompt', 'input_chapters'],
     },
   },
   {

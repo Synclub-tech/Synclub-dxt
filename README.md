@@ -17,6 +17,18 @@ You can install **SynClub-Generate-Comic**  on Claude Desktop with one click by 
 
 #### Quick Install
 
+* **How to get the .dxt file**
+
+```
+git clone https://github.com/520chatgpt01/Synclub-dxt
+cd synclub-dxt
+npm install
+npm install -g @anthropic-ai/dxt
+dxt pack
+```
+
+* **How to use the .dxt file**
+
 ```bash
 1. Open Claude Desktop  
 2. Go to Settings → Extensions → Browse Extensions → Desktop Extensions → Advanced Settings
@@ -114,4 +126,4 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 
 [https://github.com/520chatgpt01/Synclub-mcp-server](https://github.com/520chatgpt01/Synclub-mcp-server)
 
-**🎉 Covers the entire comic creation workflow! From scriptwriting to comic image generation — perfect for AI-assisted comic creation!** 🎨✨`<h1 align="center">`SynClub MCP Server`</h1>`
+**🎉 Covers the entire comic creation workflow! From scriptwriting to comic image generation — perfect for AI-assisted comic creation!** 🎨✨`<h1 align="center">`SynClub MCP Server `</h1>`
