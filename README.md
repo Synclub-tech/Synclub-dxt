@@ -90,7 +90,6 @@ dxt pack
 
 <img src="https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/all_characters.jpg" width="300" alt="Character Image Generation">
 
-
 ### 📖 Step 3 - Text Storyboard Creation
 
 - **Description**:
