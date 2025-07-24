@@ -1,4 +1,3 @@
-
 # MCP-SynClub-Generate-Comic -Claude-dxt
 
 MCP-SynClub-Generate-Comic is powered by services provided by [synclubmcp](https://synclubmcp.com).Designed specifically for comic creation, MCP-SynClub-Generate-Comic integrates the full creative workflow, including scriptwriting, character image generation, and storyboard creation.
@@ -32,6 +31,8 @@ You can install **MCP-SynClub-Generate-Comic** on Claude Desktop with a single c
 
 * **How to get the .dxt file**
 
+  You can get the file directly from the git repository, or by following the steps below.
+
 ```bash
 git clone https://github.com/Synclub-tech/Synclub-dxt
 cd synclub-dxt
@@ -56,7 +57,7 @@ dxt pack
 1. [ Visit SynClub MCP](https://synclubmcp.com/)
 2. Sign in with your User ID and password
 3. Click the user profile dropdown menu
-4. Copy your API key from the  Key section
+4. Copy your API key from the Key section
 ```
 
 ## Usage Guide
@@ -177,7 +178,3 @@ Synclub-mcp-server-dxt/
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/Synclub-tech/Synclub-dxt/blob/main/LICENSE) file for details.
-
-```
-
-```
