@@ -75,9 +75,9 @@ dxt pack
       - Plot: An overbearing CEO (A) meets a little girl (B) in need of help, and they eventually fall in love.
 - **Output Example**:
 
-<img src="https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/1-Script%20Generation.png" width="300" alt="Script Generation">
+<img src="https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/1-Script%20Generation.png" width="300" alt="Script Generation">
 
-<img src="https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/2-Script%20Editing.png" width="300" alt="Script Editing">
+<img src="https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/2-Script%20Editing.png" width="300" alt="Script Editing">
 
 ### 🧑‍🎨 Step 2-Character Image Generation
 
@@ -86,7 +86,10 @@ dxt pack
 - **Prompt Example**: "I want an illustration-style image. The female lead has long, wavy brown hair with bangs and fair skin. The male lead is muscular, with tanned skin and a cheerful smile."
 - **Output Example**:
 
-<img src="https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/2-Character%20Image%20Generation.png" width="300" alt="Character Image Generation">
+<img src="https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/2-Character%20Image%20Generation.png" width="300" alt="Character Image Generation">
+
+<img src="https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/all_characters.jpg" width="300" alt="Character Image Generation">
+
 
 ### 📖 Step 3 - Text Storyboard Creation
 
@@ -124,7 +127,7 @@ dxt pack
 
 - **Output Example**:
 
-<img src="https://github.com/520chatgpt01/Synclub-dxt/raw/main/image/4-Panel%20Generation.png" width="300" alt="Panel Generation">
+<img src="https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/4-Panel%20Generation.png" width="300" alt="Panel Generation">
 <img src="https://github.com/Synclub-tech/Synclub-dxt/raw/main/image/Chapter%201%20Comic%20Page.webp" width="300" alt="Chapter 1 Comic Page">
 
 ### Project Structure
