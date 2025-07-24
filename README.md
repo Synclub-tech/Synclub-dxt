@@ -130,7 +130,7 @@ dxt pack
 ### Project Structure
 
 ```
-Synclub-mcp-server-dxt/
+Synclub-dxt/
 ├── src/                         # Source code directory
 │   ├── index.js                 # Main entry file, Contains the implementation of all tools
 │   └── client.js                # API client implementation
