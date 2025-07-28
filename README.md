@@ -51,13 +51,15 @@ dxt pack
 5. Go to Settings → Developer → synclub-dxt, if it shows **"running"**, the installation was successful
 ```
 
-* **Steps to Obtain Your API Key**
+* **Steps to Obtain Your API Key & url**
 
 ```bash
 1. [ Visit SynClub MCP](https://synclubmcp.com/)
 2. Sign in with your User ID and password
 3. Click the user profile dropdown menu
 4. Copy your API key from the Key section
+5. You could Fill in https://api.synclubmcp.com in the url part
+6. If you have any other questions, you can also contact us via email at synclub.sns07@gmail.com
 ```
 
 ## Usage Guide
