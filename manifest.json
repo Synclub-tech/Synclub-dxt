@@ -11,13 +11,13 @@
     "SYNCLUB_MCP_API": {
       "type": "string",
       "title": "SynClub API Key",
-      "description": "填写您的 SynClub API Key，用于访问服务",
+      "description": "your SynClub API Key",
       "required": true
     },
     "UNIFIED_API_BASE_URL": {
       "type": "string",
       "title": "Unified API Base URL",
-      "description": "填写后端统一接口的 Base URL，例如 http://example.com:8080",
+      "description": "your Base URL,for example http://example.com:8080",
       "required": true
     }
   },
